@@ -14,8 +14,7 @@ module.exports = (passport) => {
 
   passport.use(new GithubStrategy({
       clientID: GITHUB_CLIENT_ID,
-      clientSecret: GITHUB_CLIENT_SECRET,
-      callbackURL: CALLBACK_URL
+      clientSecret: GITHUB_CLIENT_SECRET
     }, 
     (accessToken, refreshToken, profile, cb) => {
       User.findOne({'github.id': profile.id}, (err, user) => {
