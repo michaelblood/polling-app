@@ -5,11 +5,11 @@ module.exports = (app, passport) => {
 
   app.get('/login', (req, res) => {
     let message = req.query.message;
-    res.end('message');
+    res.end('<a href="/auth/github" role="button">Login with Github</a><br><br>' + message);
   });
 
   app.get('/polls/new', (req, res) => {
-    res.send(`
+    res.end(`
       <form method="post" enctype="application/x-www-form-urlencoded" action="/api/polls/new">
         <input type="text" name="pollName" placeholder="pollName">
         <input type="text" name="option1" placeholder="option">
@@ -20,7 +20,11 @@ module.exports = (app, passport) => {
   });
 
   app.get('/polls', (req, res) => {
-    res.end('Hello world', req.isLoggedIn);
+    if (req.isAuthenticated()) {
+      res.end('<h1>hello ' + req.user.github.displayName + '</h1><br><a href="/logout" role="button">Logout</a>');
+      return;
+    }
+    res.end('<a href="/login" role="button">Login</a>')
   });
 
   app.get('/auth/github/callback', passport.authenticate('github', {
