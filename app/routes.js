@@ -23,7 +23,7 @@ modules.exports = (app, passport) => {
 
   app.get('/polls', (req, res) => {
     let offset = req.query.offset || 0;
-    
+
   });
 
   app.post('/polls/:id', (req, res) => {

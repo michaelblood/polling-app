@@ -12,7 +12,7 @@ const getPolls = (offset = 0, cb) => {
         cb(err);
         return;
       }
-      cb(null, docs);
+      cb(null, docs || []);
     });
 };
 
@@ -82,10 +82,28 @@ const addOptionToPoll = (pollId, option, cb) => {
   });
 };
 
-const removeOptionFromPoll = (pollId, option, cb) => {
-
+const removeOptionFromPoll = (pollId, optionIndex, cb) => {
+  Polls.findById(pollId, '', {}, (err, poll) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (poll.options.length < 3) {
+      cb(`A poll can't have fewer than 2 options`);
+      return;
+    }
+    poll.options.pull(poll.options[optionIndex]);
+    poll.save((err) => {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, poll);
+    });
+  });
 };
 
+//@TODO add unique name checking
 // callback signature (error, updatedUserDoc) => {}
 const addFavoritePoll = (userId, pollId, pollName, cb) => {
   Users.findById(userId, '', {}, (err, doc) => {
@@ -133,5 +151,6 @@ module.exports = {
   createPoll,
   addOptionToPoll,
   createUser,
-  addFavoritePoll
+  addFavoritePoll,
+  removeOptionFromPoll
 };

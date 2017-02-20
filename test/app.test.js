@@ -4,18 +4,18 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost:27017/test-db');
+mongoose.connect('mongodb://localhost:27017/test-db', (err) => {
+  if (err) {
+    console.log('failed to connect to mongoDB. exiting...');
+    process.exit(1);
+  }
+});
 
 const Users = require('../app/models/user');
 const Polls = require('../app/models/poll');
-const { getPolls, createPoll, addFavoritePoll, addOptionToPoll, createUser } = require('../app/handlers');
+const { getPolls, createPoll, addFavoritePoll, addOptionToPoll, removeOptionFromPoll, createUser } = require('../app/handlers');
 
-describe('Server tests', function() {
-  after(function(done) {
-    Users.remove({}, () => {
-      Polls.remove({}, done);
-    });
-  });
+describe('Controller tests', function() {
   afterEach(function(done) {
     Users.remove({}, () => {
       Polls.remove({}, done);
@@ -76,21 +76,9 @@ describe('Server tests', function() {
               });
             });
           });
-          // Promise.all(
-          //   [createPoll(id, 'test-poll', true,['option1', 'option2'], () => {
-
-          //   }),
-          //   createPoll(id, 'test-poll2', true, ['option3', 'option4'], () => {
-
-          //   }),
-          //   createPoll(id, 'test-poll3', true, ['option5', 'option6'], () => {
-                  
-          //   })]
-          // ).then(() => {
-          //   done()
-          // });
         });
       });
+
       it('should return a list of polls, or an empty list if no polls are present', function(done) {
         getPolls(0, (err, docs) => {
           if (err) {
@@ -102,6 +90,7 @@ describe('Server tests', function() {
           done();
         });
       });
+
       it('should skip 1 result, when an offset is given', function(done) {
         getPolls(1, (err, docs) => {
           if (err) {
@@ -113,7 +102,20 @@ describe('Server tests', function() {
           done();
         });
       });
-    });
+
+      it('should return an empty array if at the end of the list', function(done) {
+        getPolls(3, (err, docs) => {
+          if (err) {
+            console.log(err);
+            assert(false);
+            done();
+          }
+          assert(docs.length === 0);
+          done();
+        });
+      });
+    }); // end getPolls
+
     describe('addOptionToPoll', function() {
       it('should add an option to a poll', function(done) {
         createUser('Mocha', (err, user) => {
@@ -132,8 +134,8 @@ describe('Server tests', function() {
           });
         });
       });
-      it('should not add an option to a poll that will not allow it', function() {
-        it('should add an option to a poll', function(done) {
+
+      it('should not add an option to a poll that will not allow it', function(done) {
         createUser('Mocha', (err, user) => {
           let id = user._id;
           createPoll(id, 'test-poll', false,['option1', 'option2'], (err, doc) => {
@@ -149,6 +151,42 @@ describe('Server tests', function() {
           });
         });
       });
+    });
+
+    describe('removeOptionFromPoll', function() {
+      it('should remove an option from a poll', function(done) {
+        createUser('MochaUser', (err, user) => {
+          createPoll(user._id, 'pollName', true, ['option1', 'option2', 'option3'], (err, poll) => {
+            removeOptionFromPoll(poll._id, '2', (err, poll) => {
+              if (err) {
+                console.log(err);
+                done();
+              }
+              assert(poll.options.length === 2);
+              done();
+            });
+          });
+        });
+      });
+
+      it('should not remove an option, if there would be fewer than 2 left', function(done) {
+        createUser('MochaUser', (err, user) => {
+          createPoll(user._id, 'pollName', true, ['option1', 'option2', 'option3'], (err, poll) => {
+            removeOptionFromPoll(poll._id, '2', (err, poll) => {
+              if (err) {
+                console.log(err);
+                assert(false);
+                done();
+              }
+              assert(poll.options.length === 2);
+              removeOptionFromPoll(poll._id, '1', (err, poll) => {
+                assert(err);
+                assert(!poll);
+                done();
+              })
+            });
+          });
+        });
       });
     });
 
@@ -200,4 +238,4 @@ describe('Server tests', function() {
 
   }); // end 'user handlers' tests
 
-}); // 'server tests'
+}); // 'controller tests'
