@@ -24,7 +24,7 @@ module.exports = (app, passport) => {
   });
 
   app.get('/auth/github/callback', passport.authenticate('github', {
-    successRedirect: '/',
+    successRedirect: '/polls',
     failureRedirect: '/login?message=Authentication failed',
     failureFlash: true
   }));
