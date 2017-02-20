@@ -17,7 +17,7 @@ module.exports = (passport) => {
       clientSecret: GITHUB_CLIENT_SECRET
     }, 
     (accessToken, refreshToken, profile, cb) => {
-      User.findOne({'github.id': profile.id}, (err, user) => {
+      Users.findOne({'github.id': profile.id}, (err, user) => {
         if (err) {
           cb(err);
           return;
