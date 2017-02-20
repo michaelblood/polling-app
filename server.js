@@ -13,12 +13,11 @@ mongoose.Promise = require('bluebird');
 mongoose.connect(uri);
 
 const app = express();
-app.use(expressSession({secret: 'barbadoslim'}))
 app.use(bodyParser.urlencoded({extended: false}));
 app.set('port', process.env.PORT || 3000);
 
 app.use(session({
-  secret: 'vicariously',
+  secret: 'barbadoslim',
   resave: false,
   saveUninitialized: true
 }));
