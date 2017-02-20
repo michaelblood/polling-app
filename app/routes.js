@@ -21,7 +21,7 @@ module.exports = (app, passport) => {
 
   app.get('/polls', (req, res) => {
     if (req.isAuthenticated()) {
-      res.end('<h1>hello ' + req.user.github.displayName + '</h1><br><a href="/logout" role="button">Logout</a>');
+      res.end('<h1>hello ' + req.user + '</h1><br><a href="/logout" role="button">Logout</a>');
       return;
     }
     res.end('<a href="/login" role="button">Login</a>')
@@ -34,6 +34,11 @@ module.exports = (app, passport) => {
   }));
 
   app.get('/auth/github', passport.authenticate('github'));
+
+  app.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/login?message=Logged out successfully');
+  })
 
   app.post('/polls/:id', (req, res) => {
 
