@@ -8,6 +8,14 @@ const {
 } = require('./controllers');
 
 module.exports = (app, passport) => {
+  const isLoggedIn = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      next();
+      return;
+    }
+    req.redirect('/login?message=You need to log in to do that');
+  }
+
   app.get('/api/polls', (req, res) => {
     let offset = req.query.offset || 0;
     getPolls(offset, (err, polls) => {

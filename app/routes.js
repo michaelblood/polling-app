@@ -4,11 +4,8 @@ module.exports = (app, passport) => {
   });
 
   app.get('/login', (req, res) => {
-
-  });
-
-  app.get('/logout', (req, res) => {
-
+    let message = req.query.message;
+    res.end('message');
   });
 
   app.get('/polls/new', (req, res) => {
@@ -22,21 +19,22 @@ module.exports = (app, passport) => {
     `)
   });
 
-  app.get('/polls/:id', (req, res) => {
-
-  });
-
   app.get('/polls', (req, res) => {
-    res.end('Hello world');
+    res.end('Hello world', req.isLoggedIn);
   });
 
-  app.get('/polls/callback', (req, res) => {
+  app.get('/auth/github/callback', passport.authenticate('github', {
+    successRedirect: '/',
+    failureRedirect: '/login?message=Authentication failed',
+    failureFlash: true
+  }));
 
-  })
+  app.get('/auth/github', passport.authenticate('github'));
 
   app.post('/polls/:id', (req, res) => {
 
   });
+
   app.post('/polls/:id/:choice', (req, res) => {
 
   });
