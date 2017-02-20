@@ -4,7 +4,7 @@ const Polls = require('./models/poll');
 
 // callback signature (error, [list of polls]) => {}
 const getPolls = (offset = 0, cb) => {
-  Polls.find()
+  Polls.find({}, {__v: false})
     .skip(offset)
     .limit(6)
     .exec((err, docs) => {
@@ -19,7 +19,7 @@ const getPolls = (offset = 0, cb) => {
 // callback signature (error, newlyCreatedPoll) => {}
 const createPoll = (authorId, pollName, canAddNewOptions, options, cb) => {
   if (!authorId) {
-    cb(new Error('You must be logged in to create a poll!'));
+    cb('You must be logged in to create a poll!');
     return;
   }
   let arr = options.map((option) => {
@@ -82,6 +82,7 @@ const addOptionToPoll = (pollId, option, cb) => {
   });
 };
 
+// callback signature (error, updatedUserDoc) => {}
 const removeOptionFromPoll = (pollId, optionIndex, cb) => {
   Polls.findById(pollId, '', {}, (err, poll) => {
     if (err) {
@@ -103,7 +104,6 @@ const removeOptionFromPoll = (pollId, optionIndex, cb) => {
   });
 };
 
-//@TODO add unique name checking
 // callback signature (error, updatedUserDoc) => {}
 const addFavoritePoll = (userId, pollId, pollName, cb) => {
   Users.findById(userId, '', {}, (err, doc) => {

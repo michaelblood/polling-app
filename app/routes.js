@@ -1,6 +1,4 @@
-const handlers = require('handlers');
-
-modules.exports = (app, passport) => {
+module.exports = (app, passport) => {
   app.get('/', (req, res) => {
     res.redirect('/polls');
   });
@@ -14,7 +12,14 @@ modules.exports = (app, passport) => {
   });
 
   app.get('/polls/new', (req, res) => {
-
+    res.send(`
+      <form method="post" enctype="application/x-www-form-urlencoded" action="/api/polls/new">
+        <input type="text" name="pollName" placeholder="pollName">
+        <input type="text" name="option1" placeholder="option">
+        <input type="text" name="option2" placeholder="option">
+        <input type="submit" value="Create poll">
+      </form>
+    `)
   });
 
   app.get('/polls/:id', (req, res) => {
@@ -22,9 +27,12 @@ modules.exports = (app, passport) => {
   });
 
   app.get('/polls', (req, res) => {
-    let offset = req.query.offset || 0;
-
+    res.end('Hello world');
   });
+
+  app.get('/polls/callback', (req, res) => {
+
+  })
 
   app.post('/polls/:id', (req, res) => {
 

@@ -13,7 +13,7 @@ mongoose.connect('mongodb://localhost:27017/test-db', (err) => {
 
 const Users = require('../app/models/user');
 const Polls = require('../app/models/poll');
-const { getPolls, createPoll, addFavoritePoll, addOptionToPoll, removeOptionFromPoll, createUser } = require('../app/handlers');
+const { getPolls, createPoll, addFavoritePoll, addOptionToPoll, removeOptionFromPoll, createUser } = require('../app/controllers');
 
 describe('Controller tests', function() {
   afterEach(function(done) {
@@ -22,7 +22,7 @@ describe('Controller tests', function() {
     });
   });
 
-  describe('\npoll handlers', function() {
+  describe('\npoll controllers', function() {
     describe('createPoll', function() {
       it('should return a document', function(done) {
         createUser('MochaUser', (err, user) => {
@@ -191,9 +191,9 @@ describe('Controller tests', function() {
     });
 
 
-  }); // end 'poll handlers' tests
+  }); // end 'poll controllers' tests
 
-  describe('\nuser handlers', function() {
+  describe('\nuser controllers', function() {
     // TODO: @github
     describe('createUser', function() {
       it('should create a user and return its id', function(done) {
@@ -236,6 +236,6 @@ describe('Controller tests', function() {
       });
     });
 
-  }); // end 'user handlers' tests
+  }); // end 'user controllers' tests
 
 }); // 'controller tests'
