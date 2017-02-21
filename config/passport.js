@@ -1,6 +1,6 @@
 const GithubStrategy = require('passport-github').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
-const config = require('./config');
+const config = require('./config.js');
 
 const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = process.env.GITHUB_CLIENT_ID ? process.env : config;
 const { TWITTER_CONSUMER_ID, TWITTER_CONSUMER_SECRET, CALLBACK_URL } = process.env.CONSUMER_ID ? process.env : config;
