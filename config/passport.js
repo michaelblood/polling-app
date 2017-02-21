@@ -78,7 +78,7 @@ module.exports = (passport) => {
           savedPolls: []
         }, (err, userdoc) => {
           if (err) {
-            cb(err):
+            cb(err);
             return;
           }
           cb(null, userdoc);

@@ -27,14 +27,21 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.post('/api/polls/new', (req, res) => {
-    // let { pollName, option1, option2 } = req.body;
-    let { pollName, options } = req.body; // options should be an array
+  app.post('/api/polls/new', isLoggedIn, (req, res) => {
+    let { pollName, options, canAdd } = req.body; // options should be an array
     //redirect to new poll id
-    res.redirect('/polls');
+    createPoll(req.user._id, pollName, canAdd, options, (err, poll) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      res.json(poll);
+    });
   });
 
-  app.post('/api/user/new', (req, res) => {
+  app.post('/api/polls/:pollId/delete', isLoggedIn, (req, res) => {
+    let pollId = req.params.pollId;
+    
 
   });
 };

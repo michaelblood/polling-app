@@ -16,6 +16,31 @@ const getPolls = (offset = 0, cb) => {
     });
 };
 
+const deletePoll = (requesterId, pollId, cb) => {
+  Polls.findOneAndRemove({ _id: pollId, authorId: requesterId }, (err, doc) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (!doc) {
+      cb(`You don't own that poll! (or you already deleted it...)`);
+      return;
+    }
+    cb(null, `'${doc.name}' was removed!`);
+  });
+};
+
+const incrementOption = (pollId, optionId, cb) => {
+  Polls.update({_id: pollId, 'options._id': optionId }, {$inc: {'options.$.count' : 1}}, (err, doc) => {
+    if (err) {
+      console.log(err);
+      cb(err);
+      return;
+    }
+    cb(null);
+  });
+};
+
 // callback signature (error, newlyCreatedPoll) => {}
 const createPoll = (authorId, pollName, canAddNewOptions, options, cb) => {
   if (!authorId) {
@@ -152,5 +177,7 @@ module.exports = {
   addOptionToPoll,
   createUser,
   addFavoritePoll,
-  removeOptionFromPoll
+  removeOptionFromPoll,
+  deletePoll,
+  incrementOption
 };

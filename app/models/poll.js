@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
+const shortid = require('shortid');
 
 const defaultColor = () => {
-  return 'grey';
+  let n = Math.floor(Math.random() * 256);
+  let grey = '' + n + ',' + n + ',' + n;
+  return `rgb(${grey})`
 };
 
 const schema = new mongoose.Schema({
+  _id: {
+    type: String,
+    default: shortid.generate
+  },
   created: { type: Date, default: Date.now },
   name: String,
   authorId: String,
