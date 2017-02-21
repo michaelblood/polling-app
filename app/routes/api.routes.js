@@ -27,7 +27,7 @@ module.exports = (app, passport) => {
   app.post('/api/polls/new', isLoggedIn, (req, res) => {
     //let { pollName, options, canAdd } = req.body; // options should be an array
     //redirect to new poll id
-    if ('string' == typeof body) body = JSON.parse(body);
+    if ('string' == typeof req.body) req.body = JSON.parse(req.body);
     let { pollname, option1, option2 } = req.body;
     let options = [option1, option2]; 
     createPoll(req.user._id, pollName, canAdd, options, (err, poll) => {
