@@ -31,6 +31,7 @@ module.exports = (app, passport) => {
     if ('string' == typeof req.body) body = JSON.parse(req.body);
     let { pollName, option1, option2 } = body;
     let options = [option1, option2]; 
+    let canAdd = true;
     createPoll(req.user._id, pollName, canAdd, options, (err, poll) => {
       if (err) {
         res.json({error: err.toString()});
