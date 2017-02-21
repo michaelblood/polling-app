@@ -14,7 +14,7 @@ const { isLoggedIn } = require('./auth');
 module.exports = (app, passport) => {
 
   app.get('/api/polls', (req, res) => {
-    let offset = req.query.offset || 0;
+    let offset = Number(req.query.offset) || 0;
     getPolls(offset, (err, polls) => {
       if (err) {
         res.json({error: err.toString()});

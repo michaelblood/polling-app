@@ -32,7 +32,7 @@ describe('Controller tests', function() {
                 console.log(err);
                 assert(false);
               }
-              assert(`'testPoll' was removed!` === success);
+              assert('Deleted successfully' === success);
               done();
             });
           });
@@ -41,15 +41,14 @@ describe('Controller tests', function() {
 
       it(`should not delete a poll if the authorId does NOT match the poll's authorId`, function(done) {
         createUser('testing', (err, user) => {
-          createPoll(user._id, 'testPoll', true, ['option1', 'option2'], (err, poll) => {
+          createPoll(user._id, 'testPoll2', true, ['option1', 'option2'], (err, poll) => {
             deletePoll('wrongUserId', poll._id, (err, success) => {
               if (err) {
-                console.log(err);
                 assert(`You don't own that poll! (or you already deleted it...)` === err)
                 done();
                 return;
               }
-              assert(`'testPoll' was removed!` !== success);
+              assert(`Deleted successfully` !== success);
               done();
             });
           });

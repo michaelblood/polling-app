@@ -17,17 +17,32 @@ const getPolls = (offset = 0, cb) => {
 };
 
 const deletePoll = (requesterId, pollId, cb) => {
-  Polls.findOneAndRemove({ _id: pollId, authorId: requesterId }, (err, doc) => {
+  Polls.findOneAndRemove({ _id: pollId, authorId: requesterId }, (err, poll) => {
     if (err) {
       cb(err);
       return;
     }
-    if (!doc) {
+    if (poll.authorId !== requesterId) {
       cb(`You don't own that poll! (or you already deleted it...)`);
       return;
     }
     Users.findById(requesterId, (err, user) => {
-
+      if (err) {
+        cb(err);
+        return;
+      }
+      let polls = user.createdPolls;
+      polls = polls.filter((el) => {
+        return el._id !== pollId;
+      });
+      user.polls = polls;
+      user.save((err,doc) => {
+        if (err) {
+          cb(err);
+          return;
+        }
+        cb(null, 'Deleted sucessfully');
+      });
     });
   });
 };
@@ -187,7 +202,7 @@ const getFavoritePolls = (userId, cb) => {
 
 };
 const getCreatedPolls = (userId, cb) => {
-  
+
 }
 
 // used only for testing other things that require a user. actual user creation is
