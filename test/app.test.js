@@ -13,7 +13,7 @@ mongoose.connect('mongodb://localhost:27017/test-db', (err) => {
 
 const Users = require('../app/models/user');
 const Polls = require('../app/models/poll');
-const { incrementOption, deletePoll, getPolls, createPoll, addFavoritePoll, addOptionToPoll, removeOptionFromPoll, createUser } = require('../app/controllers');
+const { removeFavoritePoll, incrementOption, deletePoll, getPolls, createPoll, addFavoritePoll, addOptionToPoll, removeOptionFromPoll, createUser } = require('../app/controllers');
 
 describe('Controller tests', function() {
   afterEach(function(done) {
@@ -22,57 +22,40 @@ describe('Controller tests', function() {
     });
   });
 
-  describe('increment', function() {
-    it('should increment a poll and return that updated polll', function(done) {
-      createUser('testing', (err, user) => {
-        createPoll(user._id, 'testing', true, ['option1', 'option2', 'option3'], (err, poll) => {
-          incrementOption(poll._id, poll.options[1]._id, (err) => {
-            if (err) {
-              console.log(err);
-              assert(false);
-            }
-            done();
-          });
-        });
-      });
-    });
-  });
-
-  describe('deletePoll', function() {
-    it(`should delete a poll if the authorId matches the poll's authorId`, function(done){
-      createUser('testing', (err, user) => {
-        createPoll(user._id, 'testPoll', true, ['option1', 'option2'], (err, poll) => {
-          deletePoll(user._id, poll._id, (err, success) => {
-            if (err) {
-              console.log(err);
-              assert(false);
-            }
-            assert(`'testPoll' was removed!` === success);
-            done();
-          });
-        });
-      });
-    });
-
-    it(`should not delete a poll if the authorId does NOT match the poll's authorId`, function(done) {
-      createUser('testing', (err, user) => {
-        createPoll(user._id, 'testPoll', true, ['option1', 'option2'], (err, poll) => {
-          deletePoll('wrongUserId', poll._id, (err, success) => {
-            if (err) {
-              console.log(err);
-              assert(`You don't own that poll! (or you already deleted it...)` === err)
-              done();
-              return;
-            }
-            assert(`'testPoll' was removed!` !== success);
-            done();
-          });
-        });
-      });
-    });
-  });
-
   describe('\npoll controllers', function() {
+    describe('deletePoll', function() {
+      it(`should delete a poll if the authorId matches the poll's authorId`, function(done){
+        createUser('testing', (err, user) => {
+          createPoll(user._id, 'testPoll', true, ['option1', 'option2'], (err, poll) => {
+            deletePoll(user._id, poll._id, (err, success) => {
+              if (err) {
+                console.log(err);
+                assert(false);
+              }
+              assert(`'testPoll' was removed!` === success);
+              done();
+            });
+          });
+        });
+      });
+
+      it(`should not delete a poll if the authorId does NOT match the poll's authorId`, function(done) {
+        createUser('testing', (err, user) => {
+          createPoll(user._id, 'testPoll', true, ['option1', 'option2'], (err, poll) => {
+            deletePoll('wrongUserId', poll._id, (err, success) => {
+              if (err) {
+                console.log(err);
+                assert(`You don't own that poll! (or you already deleted it...)` === err)
+                done();
+                return;
+              }
+              assert(`'testPoll' was removed!` !== success);
+              done();
+            });
+          });
+        });
+      });
+    });
     describe('createPoll', function() {
       it('should return a document', function(done) {
         createUser('MochaUser', (err, user) => {
@@ -109,6 +92,22 @@ describe('Controller tests', function() {
         });
       });
 
+    });
+
+    describe('incrementOption', function() {
+      it('should increment a poll and return that updated polll', function(done) {
+        createUser('testing', (err, user) => {
+          createPoll(user._id, 'testing', true, ['option1', 'option2', 'option3'], (err, poll) => {
+            incrementOption(poll._id, poll.options[1]._id, 'testip', (err) => {
+              if (err) {
+                console.log(err);
+                assert(false);
+              }
+              done();
+            });
+          });
+        });
+      });
     });
     
     describe('getPolls', function() {
@@ -284,6 +283,10 @@ describe('Controller tests', function() {
           });
         });
       });
+    });
+
+    describe.skip('removeFavoritePoll', function() {
+      
     });
 
   }); // end 'user controllers' tests

@@ -26,18 +26,44 @@ const deletePoll = (requesterId, pollId, cb) => {
       cb(`You don't own that poll! (or you already deleted it...)`);
       return;
     }
-    cb(null, `'${doc.name}' was removed!`);
+    Users.findById(requesterId, (err, user) => {
+
+    });
   });
 };
 
-const incrementOption = (pollId, optionId, cb) => {
-  Polls.update({_id: pollId, 'options._id': optionId }, {$inc: {'options.$.count' : 1}}, (err, doc) => {
+// this could be done a better way, but i got it working once and don't feel like refactoring
+// spaghetti!
+const incrementOption = (pollId, optionId, userIdOrIp, cb) => {
+  Polls.findById(pollId, (err, poll) => {
     if (err) {
-      console.log(err);
       cb(err);
       return;
     }
-    cb(null);
+    if(poll.voters.indexOf(userIdOrIp) >= 0) {
+      cb('You already voted on this poll');
+      return;
+    }
+    Polls.update({_id: pollId, 'options._id': optionId }, {$inc: {'options.$.count' : 1}}, (err) => {
+      if (err) {
+        cb(err);
+        return;
+      }
+      Polls.findById(pollId, (err, poll) => {
+        if (err) {
+          cb(err);
+          return;
+        }
+        poll.voters.push(userIdOrIp);
+        poll.save((err, doc) => {
+          if (err) {
+            cb(err);
+            return;
+          }  
+          cb(null, doc);
+        });
+      })
+    });
   });
 };
 
@@ -107,6 +133,7 @@ const addOptionToPoll = (pollId, option, cb) => {
   });
 };
 
+//refactor to use optionId instead of option index
 // callback signature (error, updatedUserDoc) => {}
 const removeOptionFromPoll = (pollId, optionIndex, cb) => {
   Polls.findById(pollId, '', {}, (err, poll) => {
@@ -152,6 +179,19 @@ const addFavoritePoll = (userId, pollId, pollName, cb) => {
   });
 };
 
+// todo
+const removeFavoritePoll = (userId, pollId, cb) => {
+
+};
+const getFavoritePolls = (userId, cb) => {
+
+};
+const getCreatedPolls = (userId, cb) => {
+  
+}
+
+// used only for testing other things that require a user. actual user creation is
+// done in the passport configuration
 // callback signature (error, newlyCreatedUser) => {}
 const createUser = (githubInfo, cb) => {
   Users.create({
@@ -179,5 +219,6 @@ module.exports = {
   addFavoritePoll,
   removeOptionFromPoll,
   deletePoll,
-  incrementOption
+  incrementOption,
+  removeFavoritePoll
 };

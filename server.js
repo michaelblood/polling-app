@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 
-const routes = require('./app/routes');
-const apiRoutes = require('./app/api.routes.js');
+const routes = require('./app/routes/routes');
+const apiRoutes = require('./app/routes/api.routes.js');
 require('./config/passport')(passport);
 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/test-db';
@@ -22,6 +22,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
+app.enable('trust proxy');
 app.use(passport.initialize());
 app.use(passport.session());
 

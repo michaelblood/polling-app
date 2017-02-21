@@ -1,3 +1,5 @@
+const { isLoggedIn } = require('./auth');
+
 module.exports = (app, passport) => {
   app.get('/', (req, res) => {
     res.redirect('/polls');

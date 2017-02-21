@@ -21,6 +21,7 @@ const schema = new mongoose.Schema({
     color: { type: String, default: defaultColor },
     count: { type: Number, default: 0 }
   }],
+  voters: [ String ],
   canAddNewOptions: { type: Boolean, default: true }
 });
 
