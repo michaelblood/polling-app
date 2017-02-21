@@ -3,7 +3,7 @@ const isLoggedIn = (req, res, next) => {
     next();
     return;
   }
-  req.redirect('/login?message=You need to log in to do that');
+  res.redirect('/login?message=You need to log in to do that');
 };
 
 module.exports = {
