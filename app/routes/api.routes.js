@@ -8,7 +8,7 @@ const {
   deletePoll,
   incrementOption,
   removeFavoritePoll
-} = require('./controllers');
+} = require('../controllers');
 const { isLoggedIn } = require('./auth');
 
 module.exports = (app, passport) => {
@@ -28,7 +28,7 @@ module.exports = (app, passport) => {
     //let { pollName, options, canAdd } = req.body; // options should be an array
     //redirect to new poll id
     let { pollname, option1, option2 } = req.body;
-    let options = [option1, option2];
+    let options = [option1, option2]; 
     createPoll(req.user._id, pollName, canAdd, options, (err, poll) => {
       if (err) {
         res.json({error: err.toString()});
