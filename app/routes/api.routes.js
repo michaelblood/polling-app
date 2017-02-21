@@ -2,12 +2,13 @@ const {
   getPolls,
   createPoll,
   addOptionToPoll,
-  removeOptionFromPoll,
   addFavoritePoll,
-  createUser,
+  removeOptionFromPoll,
   deletePoll,
   incrementOption,
-  removeFavoritePoll
+  removeFavoritePoll,
+  getFavoritePolls,
+  getCreatedPolls
 } = require('../controllers');
 const { isLoggedIn } = require('./auth');
 
@@ -24,20 +25,43 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.post('/api/polls/new', isLoggedIn, (req, res) => {
-    //let { pollName, options, canAdd } = req.body; // options should be an array
-    //redirect to new poll id
-    let body = req.body;
-    if ('string' == typeof req.body) body = JSON.parse(req.body);
-    let { pollName, option1, option2 } = body;
-    let options = [option1, option2]; 
-    let canAdd = true;
-    createPoll(req.user._id, pollName, canAdd, options, (err, poll) => {
+  app.get('/api/polls/favorites', isLoggedIn, (req, res) => {
+    let offset = Math.abs(Number(req.query.offset) || 0);
+    getFavoritePolls(req.user._id, offset, (err, polls, nextPageStart) => {
       if (err) {
         res.json({error: err.toString()});
         return;
       }
-      res.json(poll);
+      res.json({polls, nextPageStart});
+    });
+  });
+
+  app.get('/api/polls/created', isLoggedIn, (req, res) => {
+    let offset = Math.abs(Number(req.query.offset) || 0);
+    getFavoritePolls(req.user._id, offset, (err, polls, nextPageStart) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      res.json({polls, nextPageStart});
+    });
+  });
+  
+  app.post('/api/polls/new', isLoggedIn, (req, res) => {
+    let body = req.body;
+    if ('string' == typeof req.body) body = JSON.parse(req.body);
+
+    let { pollName, options, canAddNewOptions } = body;
+
+    if ('string' == typeof option) options = JSON.parse(options);
+    arrOptions = Array.prototype.slice.call(options);
+
+    createPoll(req.user._id, pollName, canAddNewOptions, arrOptions, (err, poll) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      res.json({poll});
     });
   });
 
@@ -49,7 +73,7 @@ module.exports = (app, passport) => {
         res.json({error: err.toString()});
         return;
       }
-      res.json({sucess: msg});
+      res.json({success: msg});
     });
   });
 
@@ -78,15 +102,63 @@ module.exports = (app, passport) => {
       res.json(poll);
     });
   });
+  
+  app.post('/api/polls/:pollId/new', (req, res) => {
+    let pollId = req.params.pollId;
+    let body = req.body;
+    if ('string' === typeof body) body = JSON.parse(body);
+    let newOption = body.option || null;
+    if (newOption === null) {
+      res.json({error: 'no new option specified'});
+      return;
+    }
+    addOptionToPoll(pollId, newOption, (err, poll) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      res.json(poll);
+    });
+  });
 
   app.post('/api/polls/:pollId/:optionId/delete', isLoggedIn, (req, res) => {
     let pollId = req.params.pollId;
     let optionId = req.params.optionId;
-    // todo
+    if (req.user.createdPolls.indexOf(pollId) < 0 ) {
+      res.json({error: `can't delete an option from a poll you don't own`});
+      return;
+    }
+    removeOptionFromPoll(pollId, optionId, (err, poll) => {
+      if (err) {
+        res.json({error: err});
+        return;
+      }
+      res.json(poll);
+    });
   });
 
   app.post('/api/polls/:pollId/toggleFavorite', isLoggedIn, (req, res) => {
     let pollId = req.params.pollId;
-
+    if (!req.user) {
+      res.json({error: 'something went wrong'});
+      return;
+    }
+    if (req.user.savedPolls.indexOf(pollId) < 0) {
+      addFavoritePoll(req.user._id, pollId, (err, poll) => {
+        if (err) {
+          res.json({error: err.toString()});
+          return;
+        }
+        res.json(poll);
+      });
+      return;
+    }
+    removeFavoritePoll(req.user._id, pollId, (err, poll) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      res.json(poll);
+    });
   });
 };

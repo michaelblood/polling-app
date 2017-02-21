@@ -17,31 +17,34 @@ const getPolls = (offset = 0, cb) => {
 };
 
 const deletePoll = (requesterId, pollId, cb) => {
-  Polls.findOneAndRemove({ _id: pollId, authorId: requesterId }, (err, poll) => {
+  Users.findById(requesterId, (err, user) => {
     if (err) {
       cb(err);
       return;
     }
-    if (poll.authorId !== requesterId) {
-      cb(`You don't own that poll! (or you already deleted it...)`);
+    if (!user) {
+      cb('User not found');
       return;
     }
-    Users.findById(requesterId, (err, user) => {
+    if (user.createdPolls.indexOf(pollId) < 0) {
+      cb(`You don't own that poll`);
+      return;
+    }
+    let polls = user.createdPolls.filter((el) => {
+      return el !== pollId;
+    });
+    user.createdPolls = polls;
+    user.save((err,doc) => {
       if (err) {
         cb(err);
         return;
       }
-      let polls = user.createdPolls;
-      polls = polls.filter((el) => {
-        return el._id !== pollId;
-      });
-      user.polls = polls;
-      user.save((err,doc) => {
+      Polls.findByIdAndRemove(pollId).exec((err, poll) => {
         if (err) {
           cb(err);
           return;
         }
-        cb(null, 'Deleted sucessfully');
+        cb(null, 'Deleted successfully');
       });
     });
   });
@@ -110,7 +113,7 @@ const createPoll = (authorId, pollName, canAddNewOptions, options, cb) => {
         cb('User not found');
         return;
       }
-      user.createdPolls.push({ id: doc._id, pollName: doc.name });
+      user.createdPolls.push(doc._id);
       user.save((err, user) => {
         if (err) {
           // console.log(err);
@@ -147,43 +150,35 @@ const addOptionToPoll = (pollId, option, cb) => {
     });
   });
 };
-
-//refactor to use optionId instead of option index
-// callback signature (error, updatedUserDoc) => {}
-const removeOptionFromPoll = (pollId, optionIndex, cb) => {
-  Polls.findById(pollId, '', {}, (err, poll) => {
-    if (err) {
-      cb(err);
-      return;
-    }
+const removeOptionFromPoll = (pollId, optionId, cb) => {
+  Polls.findById(pollId, (err, poll) => {
     if (poll.options.length < 3) {
-      cb(`A poll can't have fewer than 2 options`);
+      cb(`cannot have less than 2 options`);
       return;
     }
-    poll.options.pull(poll.options[optionIndex]);
-    poll.save((err) => {
+    poll.options.pull(optionId);
+    poll.save((err, doc) => {
       if (err) {
         cb(err);
         return;
       }
-      cb(null, poll);
+      cb(null, doc);
     });
   });
 };
 
 // callback signature (error, updatedUserDoc) => {}
-const addFavoritePoll = (userId, pollId, pollName, cb) => {
+const addFavoritePoll = (userId, pollId, cb) => {
   Users.findById(userId, '', {}, (err, doc) => {
     if (err) {
       cb(err);
       return;
     }
     if (doc === null) {
-      // console.log('user not found');
       cb('User not found');
       return;
     }
-    doc.savedPolls.push({pollId, pollName});
+    doc.savedPolls.push(pollId);
     doc.save((err, doc) => {
       if (err) {
         cb(err);
@@ -194,16 +189,67 @@ const addFavoritePoll = (userId, pollId, pollName, cb) => {
   });
 };
 
-// todo
 const removeFavoritePoll = (userId, pollId, cb) => {
-
+  if (!userId || !pollId) {
+    cb('missing parameter');
+    return;
+  }
+  Users.findById(userId, (err, user) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (user === null) {
+      cb('user not found');
+      return;
+    }
+    let polls = user.savedPolls.filter(el => !(el === pollId));
+    user.savedPolls = polls;
+    user.save((err, doc) => {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, doc);
+    })
+  });
 };
-const getFavoritePolls = (userId, cb) => {
 
+const getFavoritePolls = (userId, offset = 0, cb) => {
+  Users.findById(userId, (err, user) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (user.savedPolls.length - offset < 0) {
+      cb(null, [], -1);
+      return;
+    }
+    let nextPage = offset + 6;
+    if (user.savedPolls.length < nextPage) {
+      nextPage = -1;
+    }
+    cb(null, user.savedPolls.slice(offset, offset+6), nextPage)
+  });
 };
-const getCreatedPolls = (userId, cb) => {
 
-}
+const getCreatedPolls = (userId, offset = 0, cb) => {
+  Users.findById(userId, (err, user) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (user.createdPolls.length - offset < 0) {
+      cb(null, [], -1);
+      return;
+    }
+    let nextPage = offset + 6;
+    if (user.createdPolls.length < nextPage) {
+      nextPage = -1;
+    }
+    cb(null, user.createdPolls.slice(offset, offset+6), nextPage)
+  });
+};
 
 // used only for testing other things that require a user. actual user creation is
 // done in the passport configuration
@@ -235,5 +281,7 @@ module.exports = {
   removeOptionFromPoll,
   deletePoll,
   incrementOption,
-  removeFavoritePoll
+  removeFavoritePoll,
+  getFavoritePolls,
+  getCreatedPolls
 };

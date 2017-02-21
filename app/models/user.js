@@ -14,14 +14,8 @@ const schema = new mongoose.Schema({
     avatar: String
   },
   loginMethod: String,
-  createdPolls: [{
-    id: String,
-    pollName: String
-  }],
-  savedPolls: [{
-    pollId: String,
-    pollName: String
-  }]
+  createdPolls: [ String ],
+  savedPolls: [ String ]
 });
 
 module.exports = mongoose.model('User', schema);

@@ -13,7 +13,19 @@ mongoose.connect('mongodb://localhost:27017/test-db', (err) => {
 
 const Users = require('../app/models/user');
 const Polls = require('../app/models/poll');
-const { removeFavoritePoll, incrementOption, deletePoll, getPolls, createPoll, addFavoritePoll, addOptionToPoll, removeOptionFromPoll, createUser } = require('../app/controllers');
+const {
+  getPolls,
+  createPoll,
+  addOptionToPoll,
+  addFavoritePoll,
+  removeOptionFromPoll,
+  deletePoll,
+  incrementOption,
+  removeFavoritePoll,
+  getFavoritePolls,
+  getCreatedPolls,
+  createUser
+} = require('../app/controllers');
 
 describe('Controller tests', function() {
   afterEach(function(done) {
@@ -27,13 +39,15 @@ describe('Controller tests', function() {
       it(`should delete a poll if the authorId matches the poll's authorId`, function(done){
         createUser('testing', (err, user) => {
           createPoll(user._id, 'testPoll', true, ['option1', 'option2'], (err, poll) => {
-            deletePoll(user._id, poll._id, (err, success) => {
-              if (err) {
-                console.log(err);
-                assert(false);
-              }
-              assert('Deleted successfully' === success);
-              done();
+            createPoll(user._id, 'testPoll2', true, ['option3', 'option4'], (err, unused) => {
+              deletePoll(user._id, poll._id, (err, success) => {
+                if (err) {
+                  console.log(err);
+                  assert(false);
+                }
+                assert('Deleted successfully' === success);
+                done();
+              });
             });
           });
         });
@@ -41,15 +55,17 @@ describe('Controller tests', function() {
 
       it(`should not delete a poll if the authorId does NOT match the poll's authorId`, function(done) {
         createUser('testing', (err, user) => {
-          createPoll(user._id, 'testPoll2', true, ['option1', 'option2'], (err, poll) => {
-            deletePoll('wrongUserId', poll._id, (err, success) => {
-              if (err) {
-                assert(`You don't own that poll! (or you already deleted it...)` === err)
+          createUser('alsoTesting', (err, otherUser) => {
+            createPoll(user._id, 'testPoll2', true, ['option1', 'option2'], (err, poll) => {
+              deletePoll(otherUser._id, poll._id, (err, success) => {
+                if (err) {
+                  assert.equal(`You don't own that poll`, err.toString())
+                  done();
+                  return;
+                }
+                assert.notEqual(`Deleted successfully`, success);
                 done();
-                return;
-              }
-              assert(`Deleted successfully` !== success);
-              done();
+              });
             });
           });
         });
@@ -111,7 +127,6 @@ describe('Controller tests', function() {
     
     describe('getPolls', function() {
       beforeEach(function(done) {
-        // TODO: @github
         createUser('MochaUser', (err, doc) => {
           let id = doc._id;
           createPoll(id, 'test-poll', true,['option1', 'option2'], () => {
@@ -205,7 +220,7 @@ describe('Controller tests', function() {
       it('should remove an option from a poll', function(done) {
         createUser('MochaUser', (err, user) => {
           createPoll(user._id, 'pollName', true, ['option1', 'option2', 'option3'], (err, poll) => {
-            removeOptionFromPoll(poll._id, '2', (err, poll) => {
+            removeOptionFromPoll(poll._id, poll.options[2]._id, (err, poll) => {
               if (err) {
                 console.log(err);
                 done();
@@ -220,14 +235,14 @@ describe('Controller tests', function() {
       it('should not remove an option, if there would be fewer than 2 left', function(done) {
         createUser('MochaUser', (err, user) => {
           createPoll(user._id, 'pollName', true, ['option1', 'option2', 'option3'], (err, poll) => {
-            removeOptionFromPoll(poll._id, '2', (err, poll) => {
+            removeOptionFromPoll(poll._id, poll.options[1]._id, (err, poll) => {
               if (err) {
                 console.log(err);
                 assert(false);
                 done();
               }
               assert(poll.options.length === 2);
-              removeOptionFromPoll(poll._id, '1', (err, poll) => {
+              removeOptionFromPoll(poll._id, poll.options[1]._id, (err, poll) => {
                 assert(err);
                 assert(!poll);
                 done();
@@ -242,7 +257,6 @@ describe('Controller tests', function() {
   }); // end 'poll controllers' tests
 
   describe('\nuser controllers', function() {
-    // TODO: @github
     describe('createUser', function() {
       it('should create a user and return its id', function(done) {
         createUser('Mocha', (err, doc) => {
@@ -275,7 +289,7 @@ describe('Controller tests', function() {
           let id = user._id;
           createPoll(id, 'test-poll', true,['option1', 'option2'], (err, doc) => {
             assert(user.savedPolls.length === 0);
-            addFavoritePoll(id, doc._id, doc.name, (err, updatedUser) => {
+            addFavoritePoll(id, doc._id, (err, updatedUser) => {
               assert(updatedUser.savedPolls.length === 1);
               done();
             });
@@ -288,6 +302,13 @@ describe('Controller tests', function() {
       
     });
 
+    describe.skip('getFavoritePolls', function() {
+
+    });
+
+    describe.skip('getCreatedPolls', function() {
+
+    });
   }); // end 'user controllers' tests
 
 }); // 'controller tests'
