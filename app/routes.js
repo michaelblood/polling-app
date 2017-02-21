@@ -5,7 +5,7 @@ module.exports = (app, passport) => {
 
   app.get('/login', (req, res) => {
     let message = req.query.message;
-    res.end('<a href="/auth/github" role="button">Login with Github</a><br><br>' + message);
+    res.end('<a href="/auth/github" role="button">Login with Github</a><br><br>' + (message || ''));
   });
 
   app.get('/polls/new', (req, res) => {
@@ -21,7 +21,7 @@ module.exports = (app, passport) => {
 
   app.get('/polls', (req, res) => {
     if (req.isAuthenticated()) {
-      res.end('<h1>hello ' + req.user + '</h1><br><a href="/logout" role="button">Logout</a>');
+      res.end('<h1>hello ' + req.user.github.username + '</h1><br><a href="/logout" role="button">Logout</a>');
       return;
     }
     res.end('<a href="/login" role="button">Login</a>')

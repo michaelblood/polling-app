@@ -1,6 +1,9 @@
 const GithubStrategy = require('passport-github').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
+const config = require('./config');
 
-const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, CALLBACK_URL } = process.env.GITHUB_CLIENT_ID ? process.env : require('./config');
+const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET} = process.env.GITHUB_CLIENT_ID ? process.env : config;
+const { TWITTER_CONSUMER_ID, TWITTER_CONSUMER_SECRET, CALLBACK_URL } = process.env.CONSUMER_ID ? process.env : config;
 const Users = require('../app/models/user');
 
 module.exports = (passport) => {
@@ -30,8 +33,10 @@ module.exports = (passport) => {
           github: {
             id: profile.id,
             username: profile.username,
-            displayName: profile.displayName
+            displayName: profile.displayName,
+            avatar: profile.photos ? profile.photos[0].value : null
           },
+          loginMethod: 'github',
           createdPolls: [],
           savedPolls: []
         }, (err, doc) => {
@@ -44,5 +49,42 @@ module.exports = (passport) => {
         });
       });
     }
+  ));
+
+  passport.use(new TwitterStrategy({
+      consumerKey: TWITTER_CONSUMER_ID,
+      consumerSecret: TWITTER_CONSUMER_SECRET,
+      callbackURL: CALLBACK_URL
+    },
+    (acessToken, refreshToken, profile, cb) => {
+      Users.findOne({ 'twitter.id': profile.id }, (err, user) => {
+        if (err) {
+          cb(err);
+          return;
+        }
+        if (user) {
+          cb(null, user);
+          return;
+        }
+        Users.create({
+          twitter: {
+            id: profile.id,
+            username: profile.username,
+            displayName: profile.displayName,
+            avatar: profile.photos ? profile.photos[0].value : null
+          },
+          loginMethod: 'twitter',
+          createdPolls: [],
+          savedPolls: []
+        }, (err, userdoc) => {
+          if (err) {
+            cb(err):
+            return;
+          }
+          cb(null, userdoc);
+          return;
+        });
+      });
+    }  
   ));
 };

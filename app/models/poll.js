@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+const defaultColor = () => {
+  return 'grey';
+};
+
 const schema = new mongoose.Schema({
   created: { type: Date, default: Date.now },
   name: String,
@@ -7,6 +11,7 @@ const schema = new mongoose.Schema({
   authorName: String,
   options: [{
     option: String,
+    color: { type: String, default: defaultColor },
     count: { type: Number, default: 0 }
   }],
   canAddNewOptions: { type: Boolean, default: true }

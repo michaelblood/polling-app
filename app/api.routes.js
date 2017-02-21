@@ -28,8 +28,8 @@ module.exports = (app, passport) => {
   });
 
   app.post('/api/polls/new', (req, res) => {
-    let { pollName, option1, option2 } = req.body;
-    
+    // let { pollName, option1, option2 } = req.body;
+    let { pollName, options } = req.body; // options should be an array
     //redirect to new poll id
     res.redirect('/polls');
   });
