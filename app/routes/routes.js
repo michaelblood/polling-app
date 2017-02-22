@@ -15,7 +15,7 @@ module.exports = (app, passport) => {
 
   app.get('/polls', (req, res) => {
     if (req.isAuthenticated()) {
-      res.end('<h1>hello ' + req.user.github.username + '</h1><br><a href="/logout" role="button">Logout</a><br><a href="/polls/new">New poll</a>');
+      res.end('<h1>hello ' + req.user.github.username + '</h1><br><a href="/logout" role="button">Logout</a><br><a href="/">New poll</a>');
       return;
     }
     res.end('<a href="/login" role="button">Login</a>')
