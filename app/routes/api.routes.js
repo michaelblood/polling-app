@@ -9,16 +9,25 @@ const {
   removeFavoritePoll,
   getFavoritePolls,
   getCreatedPolls
-} = require('../controllers');
+} = require('../controllers');  
 const { isLoggedIn } = require('./auth');
 
 module.exports = (app, passport) => {
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
   app.get('/api/polls', (req, res) => {
     let offset = Number(req.query.offset) || 0;
     getPolls(offset, (err, polls) => {
       if (err) {
         res.json({error: err.toString()});
+        return;
+      }
+      if (polls.length < 6) {
+        res.json({polls: polls, nextPageStart: -1});
         return;
       }
       res.json({ polls: polls, nextPageStart: offset + polls.length });
@@ -38,7 +47,7 @@ module.exports = (app, passport) => {
 
   app.get('/api/polls/created', isLoggedIn, (req, res) => {
     let offset = Math.abs(Number(req.query.offset) || 0);
-    getFavoritePolls(req.user._id, offset, (err, polls, nextPageStart) => {
+    getCreatedPolls(req.user._id, offset, (err, polls, nextPageStart) => {
       if (err) {
         res.json({error: err.toString()});
         return;
@@ -47,16 +56,22 @@ module.exports = (app, passport) => {
     });
   });
   
-  app.post('/api/polls/new', isLoggedIn, (req, res) => {
+  app.post('/api/polls/new', /*isLoggedIn,*/ (req, res) => {
     let body = req.body;
     if ('string' == typeof req.body) body = JSON.parse(req.body);
 
     let { pollName, options, canAddNewOptions } = body;
-
+    if (!options || !pollName || (!canAddNewOptions && canAddNewOptions !== false)){
+      res.json({error: 'missing parameter'});
+      return;
+    }
     if ('string' == typeof option) options = JSON.parse(options);
-    arrOptions = Array.prototype.slice.call(options);
+    if (!req.user) {
+      res.json({error: 'you must be logged in to do that'});
+      return;
+    }
 
-    createPoll(req.user._id, pollName, canAddNewOptions, arrOptions, (err, poll) => {
+    createPoll(req.user._id, pollName, canAddNewOptions, options, (err, poll) => {
       if (err) {
         res.json({error: err.toString()});
         return;
@@ -91,7 +106,7 @@ module.exports = (app, passport) => {
       return;
     }
     let ip = req.ip;
-    if (req.ips & reg.ips.length > 0) {
+    if (req.ips & req.ips.length > 0) {
       ip = req.ips[0];
     }
     incrementOption(pollId, optionId, ip, (err, poll) => {
@@ -112,7 +127,8 @@ module.exports = (app, passport) => {
       res.json({error: 'no new option specified'});
       return;
     }
-    addOptionToPoll(pollId, newOption, (err, poll) => {
+    let optionColor = body.optionColor || null;
+    addOptionToPoll(pollId, newOption, optionColor, (err, poll) => {
       if (err) {
         res.json({error: err.toString()});
         return;

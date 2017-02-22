@@ -86,13 +86,21 @@ const incrementOption = (pollId, optionId, userIdOrIp, cb) => {
 };
 
 // callback signature (error, newlyCreatedPoll) => {}
-const createPoll = (authorId, pollName, canAddNewOptions, options, cb) => {
+const createPoll = (authorId, pollName, canAddNewOptions, obj, cb) => {
   if (!authorId) {
     cb('You must be logged in to create a poll!');
     return;
   }
-  let arr = options.map((option) => {
-    return { option: option, count: 0 };
+  let options = [];
+  let colors = [];
+  for (let prop in obj) {
+    let op = obj[prop]
+    options.push(op.text);
+    colors.push(op.color);
+  }
+
+  let arr = options.map((option, index) => {
+    return { option: option, color: colors[index], count: 0 };
   });
   Polls.create({
     authorId,
@@ -126,8 +134,8 @@ const createPoll = (authorId, pollName, canAddNewOptions, options, cb) => {
 };
 
 // callback signature (error, updatedPollDoc) => {}
-const addOptionToPoll = (pollId, option, cb) => {
-  let poll = Polls.findById(pollId, '', {}, (err, doc) => {
+const addOptionToPoll = (pollId, option, color, cb) => {
+  Polls.findById(pollId, '', {}, (err, doc) => {
     if (err) {
       cb(err);
       return;
@@ -140,7 +148,9 @@ const addOptionToPoll = (pollId, option, cb) => {
       cb(null, doc);
       return;
     }
-    doc.options.push({option: option, count: 0});
+    let newOption = {option, count: 0};
+    if (color) newOption.color = color;
+    doc.options.push(newOption);
     doc.save((err) => {
       if (err) {
         cb(err);

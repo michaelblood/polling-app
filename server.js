@@ -3,6 +3,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const path = require('path');
 
 const routes = require('./app/routes/routes');
 const apiRoutes = require('./app/routes/api.routes.js');
@@ -14,6 +15,7 @@ mongoose.connect(uri);
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
 
 app.use(session({
@@ -25,6 +27,8 @@ app.use(session({
 app.enable('trust proxy');
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(express.static(path.join(__dirname, 'client')));
 
 routes(app, passport);
 apiRoutes(app, passport);
