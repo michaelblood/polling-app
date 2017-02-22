@@ -1,5 +1,4 @@
 const { isLoggedIn } = require('./auth');
-const path = require('path');
 
 module.exports = (app, passport) => {
   app.get('/', (req, res) => {
@@ -16,7 +15,7 @@ module.exports = (app, passport) => {
 
   app.get('/polls', (req, res) => {
     if (req.isAuthenticated()) {
-      res.end('<h1>hello ' + req.user.github.username + '</h1><br><a href="/logout" role="button">Logout</a>');
+      res.end('<h1>hello ' + req.user.github.username + '</h1><br><a href="/logout" role="button">Logout</a><br><a href="/polls/new">New poll</a>');
       return;
     }
     res.end('<a href="/login" role="button">Login</a>')
