@@ -4,14 +4,32 @@ const Login = React.createClass({
 
   render() {
     return (
-      <div className="row">
-        <div className="col-sm-6 text-center">
-          <h1><a href="/auth/twitter">Sign in with Twitter</a></h1>
+      <div>
+        <div className="jumbotron text-center">
+          <h1>Login</h1>
         </div>
-        <div className="col-sm-6 text-center">
-          <h1><a href="/auth/github">Sign in with GitHub</a></h1>
+        <div className="row">
+          <div className="login-col col-sm-6 text-center">
+            <div className="login-house">
+              <a href="/auth/twitter">
+                <h1>Sign in with Twitter</h1>
+                <img className="img img-responsive" width="400px" src="/img/twitter.png" />
+              </a>
+            </div>
+          </div>
+          <div className="login-col col-sm-6 text-center">
+            <div className="login-house">
+              
+              <a href="/auth/github">
+                <h1>Sign in with GitHub</h1>
+                <img className="img img-responsive" width="400px" src="/img/github.png"/>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 });
+
+export default Login;

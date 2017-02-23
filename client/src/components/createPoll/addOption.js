@@ -10,7 +10,7 @@ const AddOption = ({ onClick, onChange, index, color }) => {
           className="form-control"
           type="text"
           style={{width: '75%'}}
-          placeholder="option text"
+          placeholder="option name"
           onChange={(el) => onChange(index, 'text', el.target.value)}
         />
       </div>

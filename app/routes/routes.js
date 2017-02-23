@@ -1,17 +1,6 @@
 const { isLoggedIn } = require('./auth');
 
 module.exports = (app, passport) => {
-  app.get('/', (req, res) => {
-    res.redirect('/polls');
-  });
-  app.get('/login', (req, res) => {
-    let message = req.query.message;
-    res.end('<a href="/auth/github" role="button">Login with Github</a><br><br>' + (message || ''));
-  });
-
-  app.get('/polls/new', (req, res) => {
-    
-  });
 
   app.get('/polls', (req, res) => {
     if (req.isAuthenticated()) {
@@ -39,12 +28,4 @@ module.exports = (app, passport) => {
     req.logout();
     res.redirect('/login?message=Logged out successfully');
   })
-
-  app.post('/polls/:id', (req, res) => {
-
-  });
-
-  app.post('/polls/:id/:choice', (req, res) => {
-
-  });
 };

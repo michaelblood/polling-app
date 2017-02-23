@@ -92,11 +92,10 @@ const CreatePoll = React.createClass({
     return options;
   },
 
-  toggleCanAdd(el) {
+  toggleCanAdd() {
     this.setState({
       canAddNewOptions: !this.state.canAddNewOptions
     });
-
   },
 
   handleSubmit() {
@@ -112,39 +111,44 @@ const CreatePoll = React.createClass({
       body: JSON.stringify(options),
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
-    }).then((response) => {
-      console.log(response);
-      return response.json()
-    }).then(json => {
+    }).then((response) => response.json())
+      .then(json => {
         if (json.error) {
           alert(json.error);
           return;
         }
-        this.context.router.push(`/polls/${json._id}`)
-      }).catch((err) => console.log(err));
+        this.context.router.push(`/polls/${json._id}`);
+      })
+      .catch((err) => console.log(err));
   },
 
   render() {
     return (
-      <div className="row">
-        <div className="col-sm-offset-2 col-sm-8 poll-view">
-          <h3 htmlFor="poll-name">Poll name:</h3>{' '}
-          <input id="poll-name" type="text" onChange={(el) => this.handleNameChange(el.target.value)} className="form-control" placeholder="Poll name" />
-          <div className="option-field-container">
-            <hr />
-            <h3>Options:</h3>
-            {this.renderOptions()}
-            <div id="add-option-btn" onClick={this.addAnotherOption} className="form-inline text-center add-option">
-              <label><span className="glyphicon glyphicon-plus" /> Add another option...</label>
-            </div>
-            <div className="row">
-              <div className="checkbox col-sm-3 col-sm-offset-2">
-                <label>
-                  <input defaultChecked="checked" onClick={(el) => this.toggleCanAdd(el)} value={this.state.canAdd ? 'on' : 'off'} className="pull-right" type="checkbox" />Allow custom options
-                </label>
+      <div>
+        <div className="jumbotron text-center">
+          <h1>New Poll</h1>
+        </div>
+        <div className="row">
+          <div className="col-sm-offset-2 col-sm-8 poll-view">
+            <h3 htmlFor="poll-name">Poll name:</h3>{' '}
+            <input id="poll-name" type="text" onChange={(el) => this.handleNameChange(el.target.value)} className="form-control" placeholder="Poll name" />
+            <div className="option-field-container">
+              <hr />
+              <h3>Options:</h3>
+              {this.renderOptions()}
+              <div id="add-option-btn" onClick={this.addAnotherOption} className="form-inline text-center add-option">
+                <label><span className="glyphicon glyphicon-plus" /> Add another option...</label>
               </div>
-              <div id="submit-new-poll" onClick={this.handleSubmit} className="col-sm-5 form-inline text-center add-option">
-                <label><span className="glyphicon glyphicon-ok"/> Submit new poll</label>
+              <div className="row">
+                <div className="checkbox col-sm-3 col-sm-offset-2">
+                  <label>
+                    <input defaultChecked="checked" onClick={this.toggleCanAdd} value={this.state.canAdd ? 'on' : 'off'} type="checkbox" />
+                    Allow voters to add custom options
+                  </label>
+                </div>
+                <div id="submit-new-poll" onClick={this.handleSubmit} className="col-sm-5 form-inline text-center add-option">
+                  <label><span className="glyphicon glyphicon-ok"/> Submit new poll</label>
+                </div>
               </div>
             </div>
           </div>
