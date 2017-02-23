@@ -75,7 +75,7 @@ module.exports = (app, passport) => {
         res.json({error: err.toString()});
         return;
       }
-      res.json({poll});
+      res.json(poll);
     });
   });
 
