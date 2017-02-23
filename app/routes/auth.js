@@ -1,9 +1,9 @@
 const isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  if (req.user) {
     next();
     return;
   }
-  res.redirect('/login?message=You need to log in to do that');
+  res.json({error: 'not authenticated'});
 };
 
 module.exports = {
