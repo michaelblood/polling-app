@@ -14,7 +14,6 @@ mongoose.Promise = require('bluebird');
 mongoose.connect(uri);
 
 const app = express();
-app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.set('port', process.env.PORT || 3000);
 
@@ -29,6 +28,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'client')));
+
+app.use((req, res, next) => {
+  console.log(req.user ? req.user._id : 'user not found');
+  next(req, res, next);
+})
 
 routes(app, passport);
 apiRoutes(app, passport);

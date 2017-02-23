@@ -1,7 +1,6 @@
 // Create Poll page - /polls/new
 
 import React, { PropTypes } from 'react';
-import { Router, browserHistory } from 'react-router';
 import throttle from 'lodash/throttle';
 
 import AddOption from './addOption';

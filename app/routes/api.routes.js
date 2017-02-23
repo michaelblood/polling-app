@@ -56,7 +56,7 @@ module.exports = (app, passport) => {
     });
   });
   
-  app.post('/api/polls/new', /*isLoggedIn,*/ (req, res) => {
+  app.post('/api/polls/new', isLoggedIn, (req, res) => {
     let body = req.body;
     if ('string' == typeof req.body) body = JSON.parse(req.body);
 
