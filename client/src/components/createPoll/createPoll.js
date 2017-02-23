@@ -6,6 +6,9 @@ import throttle from 'lodash/throttle';
 import AddOption from './addOption';
 
 const CreatePoll = React.createClass({
+  contextTypes: {
+    router: PropTypes.object
+  },
 
   defaultColor() {
     let r = Math.floor(Math.random() * 256).toString(16);

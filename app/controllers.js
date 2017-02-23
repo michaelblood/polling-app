@@ -122,9 +122,9 @@ const createPoll = (authorId, pollName, canAddNewOptions, obj, cb) => {
         return;
       }
       user.createdPolls.push(doc._id);
-      user.save((err, user) => {
+      user.save((err) => {
         if (err) {
-          // console.log(err);
+          console.log(err);
           cb(err);
         }
         cb(null, doc);
