@@ -27,12 +27,12 @@ app.enable('trust proxy');
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, 'client')));
-
 app.use((req, res, next) => {
   console.log(req.user ? req.user._id : 'user not found');
   next(req, res, next);
-})
+});
+
+app.use(express.static(path.join(__dirname, 'client')));
 
 routes(app, passport);
 apiRoutes(app, passport);
