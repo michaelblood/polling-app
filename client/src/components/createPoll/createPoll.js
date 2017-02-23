@@ -107,7 +107,8 @@ const CreatePoll = React.createClass({
     fetch('/api/polls/new', {
       method: 'POST',
       body: JSON.stringify(options),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin'
     }).then((response) => {
       console.log(response);
       return response.json()
