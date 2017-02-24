@@ -12,8 +12,7 @@ const App = React.createClass({
   getInitialState() {
     return {
       loggedIn: false,
-      user: null,
-      loading: false
+      user: null
     };
   },
 
@@ -51,16 +50,18 @@ const App = React.createClass({
     );
   },
 
+  logout() {
+    this.setState({
+      user: null,
+      loggedIn: false
+    });
+  },
+
   determineLogin() {
     let app = this;
     fetch('/api/amiloggedin', {
       credentials: 'same-origin'
-    }).then(response => {
-        if ('string' === typeof response){
-          return response.json();
-        }
-        return response;
-      })
+    }).then(response => response.json())
       .then(json => {
         if (json.error) {
           app.setState({
@@ -106,7 +107,7 @@ const App = React.createClass({
                     <MenuItem eventKey={6}>My favorite polls</MenuItem>
                   </LinkContainer>
                   <MenuItem divider />
-                  <MenuItem eventKey={4} href="/logout">Logout</MenuItem>
+                  <MenuItem onClick={this.logout} eventKey={4} href="/logout">Logout</MenuItem>
                 </NavDropdown> :
                 <LinkContainer onClick={this.handleLoad} to="/login">
                   <NavItem eventKey={1}>Login</NavItem>
