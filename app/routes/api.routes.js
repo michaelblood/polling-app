@@ -19,6 +19,14 @@ module.exports = (app, passport) => {
     next();
   });
 
+  app.get('/api/amiloggedin', (req, res) => {
+    if (req.user) {
+      res.json(req.user);
+      return;
+    }
+    res.json({error: 'Not logged in'});
+  });
+
   app.get('/api/polls', (req, res) => {
     let offset = Number(req.query.offset) || 0;
     getPolls(offset, (err, polls) => {
@@ -56,7 +64,7 @@ module.exports = (app, passport) => {
     });
   });
   
-  app.post('/api/polls/new', isLoggedIn, (req, res) => {
+  app.post('/api/polls/new', (req, res) => {
     let body = req.body;
     if ('string' == typeof req.body) body = JSON.parse(req.body);
     let { pollName, options, canAddNewOptions } = body;
@@ -66,10 +74,11 @@ module.exports = (app, passport) => {
     }
     if ('string' == typeof option) options = JSON.parse(options);
     if (!req.user) {
-      res.json({error: 'you must be logged in to do that'});
+      res.json(({error: 'you must be logged in to do that'}));
       return;
     }
-
+    console.log('user:', req.user);
+    console.log('new poll:', req.body);
     createPoll(req.user._id, pollName, canAddNewOptions, options, (err, poll) => {
       if (err) {
         res.json({error: err.toString()});

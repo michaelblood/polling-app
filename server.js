@@ -8,14 +8,16 @@ const path = require('path');
 const routes = require('./app/routes/routes');
 const apiRoutes = require('./app/routes/api.routes.js');
 require('./config/passport')(passport);
+global.Promise = require('bluebird');
 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/test-db';
-mongoose.Promise = require('bluebird');
+mongoose.Promise = global.Promise;
 mongoose.connect(uri);
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
 app.set('port', process.env.PORT || 3000);
 
 app.use(session({
@@ -28,12 +30,13 @@ app.enable('trust proxy');
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use((req, res, next) => {
-  console.log(req.user ? req.user._id : 'user not found');
-  next();
-});
-
 app.use(express.static(path.join(__dirname, 'client')));
+app.use((req, res, next) => {
+  if (req.body) {
+    console.log(req.body);
+  }
+  next();
+})
 
 routes(app, passport);
 apiRoutes(app, passport);

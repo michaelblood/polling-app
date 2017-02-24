@@ -1,48 +1,77 @@
 body {
   font-family: 'Roboto', sans-serif;
+  background-color: #f5f5f5;
+  margin-top: 50px;
+}
+.page-title {
+  color: #f5f5f5; 
+  background: #31708f;
+}
+.navbar-fixed-top {
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
+}
+.dropdown-menu {
+  background: #f5f5f5;
 }
 
 /*************************************/
 /*       CreatePoll component        */
 /*************************************/
+.checkbox {
+  margin-top: 10px;
+  padding-top: 5px;
+}
+.checkbox input {
+  margin-top: 10px;;
+}
+
+.form-group label {
+  font-weight: 300;
+}
+
 .add-option {
   padding-top: 10px;
   padding-bottom: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
-
-  background-color: #f8f8f8;
+  background-color: #f5f5f5;
   box-shadow: 0px 0px 2px 0px #888;
 }
 .add-option label {
+  margin-top: 0.5em;
   pointer-events: none;
 }
 
-#add-option-btn:hover,
+
+.add-option-btn {
+  color: #31708f;
+  cursor: pointer;
+}
+
+.add-option-btn:hover {
+  background-color: #d9edf7;
+}
+
 #submit-new-poll:hover {
   background-color: #EEE;
   cursor: pointer;
 }
-#add-option-btn:active,
+.add-option-btn:active,
 #submit-new-poll:active {
   box-shadow: 0px 0px 1px 0px #888;
+}
+
+.color-input:hover {
+  cursor: pointer;
 }
 
 .poll-view {
   padding-top: 10px;
   padding-bottom: 10px;
-  margin-top: 5px;
+  margin: 0 auto;
 }
 
 /*************************************/
 /*          Login component          */
 /*************************************/
-.login-col {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 500px;
-}
-.login-col h1 {
-  align-self: flex-start;
-}
+

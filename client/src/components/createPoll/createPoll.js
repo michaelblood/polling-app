@@ -4,6 +4,7 @@ import React, { PropTypes } from 'react';
 import throttle from 'lodash/throttle';
 
 import AddOption from './addOption';
+import AlertPopup from '../common/alert';
 
 const CreatePoll = React.createClass({
   contextTypes: {
@@ -11,10 +12,11 @@ const CreatePoll = React.createClass({
   },
 
   defaultColor() {
-    let r = Math.floor(Math.random() * 256).toString(16);
-    let g = Math.floor(Math.random() * 256).toString(16);
-    let b = Math.floor(Math.random() * 256).toString(16);
-    return `#${r}${g}${b}`;
+    let color = `#`;
+    while (color.length < 7) {
+      color += Math.floor(Math.random() * 16).toString(16);
+    }
+    return color;
   },
 
   getInitialState() {
@@ -35,7 +37,8 @@ const CreatePoll = React.createClass({
         }
       },
       canAddNewOptions: true,
-      pollName: ''
+      pollName: '',
+      alert: null
     };
   },
 
@@ -50,9 +53,18 @@ const CreatePoll = React.createClass({
     this.setState({ pollName: name});
   },
 
+  dismissAlert() {
+    this.setState({ alert: null });
+  },
+
   handleDelete(index) {
     if (this.state.numOptions < 3) {
-      alert('Polls must have at least 2 options! We want people to have a choice!');
+      this.setState({
+        alert: {
+          type: 'warning',
+          message: 'Polls must have at least 2 options!'
+        }
+      });
       return;
     }
     this.setState((previous) => {
@@ -74,6 +86,50 @@ const CreatePoll = React.createClass({
     });
   },
 
+  toggleCanAdd() {
+    this.setState({
+      canAddNewOptions: !this.state.canAddNewOptions
+    });
+  },
+  //may need to come back to this
+  handleSubmit() {
+    let options = this.state;
+
+    if (options.pollName === '') {
+      this.setState({
+        alert: {
+          type: 'warning',
+          message: 'Please specify a poll name!'
+        }
+      });
+      return;
+    }
+    let self = this;
+    fetch('/api/polls/new', {
+      method: 'POST',
+      body: JSON.stringify(options),
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin'
+    }).then((response) => {
+      console.log(response);
+      if ('object' === typeof response) {
+        return response;
+      }
+      return response.json();
+    }).then(json => {
+      if (!json._id) {
+        self.setState({
+          alert: {
+            type: 'danger',
+            message: json.error || 'Something went wrong. Try again later.'
+          }
+        });
+        return;
+      }
+      self.context.router.push(`/polls/${json._id}`);
+    }).catch((err) => console.log(err));
+  },
+
   renderOptions() {
     let options = [];
     for (let index = 0; index < this.state.nextIndex; index++) {
@@ -92,63 +148,43 @@ const CreatePoll = React.createClass({
     return options;
   },
 
-  toggleCanAdd() {
-    this.setState({
-      canAddNewOptions: !this.state.canAddNewOptions
-    });
-  },
-
-  handleSubmit() {
-    let options = this.state;
-
-    if (options.pollName === '') {
-      alert('Please specify a poll name!');
-      return;
-    }
-
-    fetch('/api/polls/new', {
-      method: 'POST',
-      body: JSON.stringify(options),
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin'
-    }).then((response) => response.json())
-      .then(json => {
-        if (json.error) {
-          alert(json.error);
-          return;
-        }
-        this.context.router.push(`/polls/${json._id}`);
-      })
-      .catch((err) => console.log(err));
-  },
-
   render() {
     return (
-      <div>
-        <div className="jumbotron text-center">
-          <h1>New Poll</h1>
-        </div>
-        <div className="row">
-          <div className="col-sm-offset-2 col-sm-8 poll-view">
-            <h3 htmlFor="poll-name">Poll name:</h3>{' '}
-            <input id="poll-name" type="text" onChange={(el) => this.handleNameChange(el.target.value)} className="form-control" placeholder="Poll name" />
-            <div className="option-field-container">
-              <hr />
-              <h3>Options:</h3>
+      <div className="container">
+        {!!this.state.alert && <AlertPopup message={this.state.alert.message} type={this.state.alert.type} onClick={this.dismissAlert} />}
+        <div className="poll-view">
+          <h3 className="text-center" htmlFor="poll-name">Poll name:</h3>{' '}
+          <div className="row">
+            <div className=" col-xs-12 col-md-6 col-md-offset-3">
+              <input className="input-lg input-block-level form-control" type="text" onChange={(el) => this.handleNameChange(el.target.value)} placeholder="Poll name" />
+            </div>
+          </div>
+          <div className="option-field-container">
+            <hr />
+            <div className="row">
               {this.renderOptions()}
-              <div id="add-option-btn" onClick={this.addAnotherOption} className="form-inline text-center add-option">
-                <label><span className="glyphicon glyphicon-plus" /> Add another option...</label>
+              <div className="col-lg-3 col-md-4 col-sm-6 col-xs-12" onClick={this.addAnotherOption}>
+                <div className="panel panel-info add-option-btn">
+                  <div className="panel-heading text-center">
+                    <h3>Add option</h3>
+                  </div>
+                  <div className="panel-body text-center">
+                    <div className="jumbotron" style={{backgroundColor: 'rgba(255, 255, 255, 0)'}}>
+                      <h1><span className="glyphicon glyphicon-plus"></span></h1>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="row">
-                <div className="checkbox col-sm-3 col-sm-offset-2">
-                  <label>
-                    <input defaultChecked="checked" onClick={this.toggleCanAdd} value={this.state.canAdd ? 'on' : 'off'} type="checkbox" />
-                    Allow voters to add custom options
-                  </label>
-                </div>
-                <div id="submit-new-poll" onClick={this.handleSubmit} className="col-sm-5 form-inline text-center add-option">
-                  <label><span className="glyphicon glyphicon-ok"/> Submit new poll</label>
-                </div>
+            </div>
+            <div className="row">
+              <div className="checkbox col-sm-3 col-sm-offset-2">
+                <label>
+                  <input defaultChecked="checked" onClick={this.toggleCanAdd} value={this.state.canAdd ? 'on' : 'off'} type="checkbox" />
+                  Allow voters to add custom options
+                </label>
+              </div>
+              <div id="submit-new-poll" onClick={this.handleSubmit} className="col-sm-5 form-inline text-center add-option">
+                <label><span className="glyphicon glyphicon-ok"/> Submit new poll</label>
               </div>
             </div>
           </div>
