@@ -53,8 +53,14 @@ const App = React.createClass({
 
   determineLogin() {
     let app = this;
-    fetch('/api/amiloggedin')
-      .then(response => response.json())
+    fetch('/api/amiloggedin', {
+      credentials: 'same-origin'
+    }).then(response => {
+        if ('string' === typeof response){
+          return response.json();
+        }
+        return response;
+      })
       .then(json => {
         if (json.error) {
           app.setState({
@@ -63,7 +69,6 @@ const App = React.createClass({
           });
           return;
         }
-        console.log(json);
         app.setState({
           loggedIn: true,
           user: json
