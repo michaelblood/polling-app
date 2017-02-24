@@ -26,13 +26,13 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-routes(app, passport);
-apiRoutes(app, passport);
 
-app.enable('trust proxy');
+// app.enable('trust proxy');
 app.use(passport.initialize());
 app.use(passport.session());
 
+routes(app, passport);
+apiRoutes(app, passport);
 
 app.listen(app.get('port'), () => {
   console.log(`listening on port ${app.get('port')}`);
