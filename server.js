@@ -31,12 +31,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, 'client')));
-app.use((req, res, next) => {
-  if (req.body) {
-    console.log(req.body);
-  }
-  next();
-})
 
 routes(app, passport);
 apiRoutes(app, passport);

@@ -20,8 +20,9 @@ module.exports = (app, passport) => {
   });
 
   app.get('/api/amiloggedin', (req, res) => {
+    console.log(req.session);
     if (req.user) {
-      console.log(req.user);
+      console.log('user:', req.user);
       res.json(req.user);
       return;
     }

@@ -67,7 +67,7 @@ const App = React.createClass({
         app.setState({
           loggedIn: true,
           user: json
-        });
+        }, app.forceUpdate());
         return;
       })
       .catch(err => console.log(err));
