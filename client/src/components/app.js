@@ -19,6 +19,12 @@ const App = React.createClass({
   componentDidMount() {
     this.determineLogin();
   },
+  
+  getName() {
+    let user = this.state.user;
+    if (!user) return 'User';
+    return user.username || user.displayName;
+  },
 
   getJumbotron(element){
     if (!element) return null;
@@ -87,6 +93,7 @@ const App = React.createClass({
   /********************************/
 
   render() {
+    console.log(this.state.user);
     return (
       <div id="app">
         <Navbar fixedTop collapseOnSelect>
@@ -98,25 +105,34 @@ const App = React.createClass({
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav pullRight>
-              { (this.state.loggedIn && this.state.user) ?
-                <NavDropdown id="user-dropdown" eventKey={3} title={this.state.user.username || (this.state.user.name || 'User')}>
-                  <LinkContainer onClick={this.handleLoad} to="/polls/created">
+              { (this.state.loggedIn && this.state.user)
+                ?
+                <NavDropdown id="user-dropdown" eventKey={3} title={this.getName()}>
+                  <LinkContainer to="/polls/created">
                     <MenuItem eventKey={5}>My created polls</MenuItem>
                   </LinkContainer>
-                  <LinkContainer onClick={this.handleLoad} to="/polls/favorites">
+                  <LinkContainer to="/polls/favorites">
                     <MenuItem eventKey={6}>My favorite polls</MenuItem>
                   </LinkContainer>
                   <MenuItem divider />
                   <MenuItem onClick={this.logout} eventKey={4} href="/logout">Logout</MenuItem>
-                </NavDropdown> :
-                <LinkContainer onClick={this.handleLoad} to="/login">
+                </NavDropdown> 
+                :
+                <LinkContainer to="/login">
                   <NavItem eventKey={1}>Login</NavItem>
                 </LinkContainer> }
             </Nav>
             <Nav>
-              { this.state.loggedIn && <LinkContainer onClick={this.handleLoad} to="/polls/new">
+              { this.state.loggedIn &&
+              <LinkContainer to="/polls/new">
                 <NavItem eventKey={2}>New poll</NavItem>
               </LinkContainer> }
+              <LinkContainer to="/polls">
+                <NavItem eventKey={7}>All polls</NavItem>
+              </LinkContainer>
+              <LinkContainer to="/gibberish">
+                <NavItem eventKey={8}>404 test</NavItem>
+              </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>

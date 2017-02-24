@@ -95,8 +95,10 @@ const createPoll = (authorId, pollName, canAddNewOptions, obj, cb) => {
   let colors = [];
   for (let prop in obj) {
     let op = obj[prop]
-    options.push(op.text);
-    colors.push(op.color);
+    if (op) {
+      options.push(op.text);
+      colors.push(op.color);
+    }
   }
 
   let arr = options.map((option, index) => {
