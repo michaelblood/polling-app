@@ -11,14 +11,14 @@ module.exports = (app, passport) => {
   // });
 
   app.get('/auth/github/callback', passport.authenticate('github', {
-    successRedirect: '/polls',
+    successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
   }));
   app.get('/auth/github', passport.authenticate('github'));
 
   app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-    successRedirect: '/polls',
+    successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true
   }));
