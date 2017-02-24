@@ -24,7 +24,7 @@ module.exports = (app, passport) => {
   }));
   app.get('/auth/twitter', passport.authenticate('twitter'));
 
-  app.post('/logout', (req, res) => {
+  app.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
   });
