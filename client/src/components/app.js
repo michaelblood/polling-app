@@ -10,12 +10,15 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 
 const App = React.createClass({
   getInitialState() {
-    this.determineLogin();
     return {
       loggedIn: false,
       user: null,
       loading: false
     };
+  },
+
+  componentDidMount() {
+    this.determineLogin();
   },
 
   getJumbotron(element){
@@ -60,6 +63,7 @@ const App = React.createClass({
           });
           return;
         }
+        console.log(json);
         app.setState({
           loggedIn: true,
           user: json
