@@ -15,6 +15,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(uri);
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'client')));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -29,8 +30,6 @@ app.use(session({
 app.enable('trust proxy');
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(express.static(path.join(__dirname, 'client')));
 
 routes(app, passport);
 apiRoutes(app, passport);
