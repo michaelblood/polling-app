@@ -55,11 +55,8 @@ module.exports = (app, passport) => {
         res.redirect(redirect.pathname + redirect.search);
         return;
       }
-      if (props) {
-        const html = renderToString(<RouterContext {...props}/>);
-        res.send(renderPage(html));
-        return;
-      }
+      const html = renderToString(<RouterContext {...props}/>);
+      res.send(renderPage(html));
     });
   });
 };

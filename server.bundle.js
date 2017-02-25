@@ -2338,11 +2338,8 @@ module.exports = function (app, passport) {
         res.redirect(redirect.pathname + redirect.search);
         return;
       }
-      if (props) {
-        var html = renderToString(React.createElement(RouterContext, props));
-        res.send(renderPage(html));
-        return;
-      }
+      var html = renderToString(React.createElement(RouterContext, props));
+      res.send(renderPage(html));
     });
   });
 };
