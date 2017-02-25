@@ -1,3 +1,10 @@
+  /********************************/
+  /*             @TODO            */
+  /********************************/
+  /*    DONT RENDER NAVBAR ITEM   */
+  /*  IF THAT COMPONENT IS ACTIVE */
+  /********************************/
+
 import React from 'react';
 import { Link } from 'react-router';
 
@@ -11,13 +18,9 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 const App = React.createClass({
   getInitialState() {
     return {
-      loggedIn: false,
+      loadingDone: false,
       user: null
     };
-  },
-
-  componentWillMount() {
-    this.determineLogin();
   },
 
   componentDidMount() {
@@ -25,7 +28,6 @@ const App = React.createClass({
   },
   
   getName() {
-    console.log(this.state.user);
     let user = this.state.user;
     if (!user) return 'User';
     let service = user.loginMethod;
@@ -37,22 +39,25 @@ const App = React.createClass({
   getJumbotron(element){
     if (!element) return null;
     let title = '';
-    switch(element.type.displayName) {
-      case 'CreatePoll':
+    switch(this.props.pathname) {
+      case '/polls/new':
         title = 'New poll';
         break;
-      case 'Login':
+      case '/login':
         title = 'Sign in';
         break;
-      case 'PollsContainer':
+      case '/polls/all':
+      case '/polls/created':
+      case '/polls/favorite':
         title = 'Polls';
         break;
-      case 'PollInfo':
-        return null;
-      case 'Home':
+      case '/':
         title = 'mb-polling.herokuapp.com';
         break;
       default:
+        if (this.props.pathname.indexOf('/poll/') >= 0) {
+          return null;
+        }
         title = 'Not found';
     }
     return (
@@ -64,12 +69,14 @@ const App = React.createClass({
 
   logout() {
     this.setState({
-      user: null,
-      loggedIn: false
+      user: null
     });
   },
 
   determineLogin() {
+    if (this.state.user) {
+      return;
+    }
     let app = this;
     fetch('/api/amiloggedin', {
       credentials: 'same-origin'
@@ -77,13 +84,13 @@ const App = React.createClass({
       .then(json => {
         if (json.error) {
           app.setState({
-            loggedIn: false,
+            loadingDone: true,
             user: null
           });
           return;
         }
         app.setState({
-          loggedIn: true,
+          loadingDone: true,
           user: json
         }, app.forceUpdate());
         return;
@@ -91,14 +98,10 @@ const App = React.createClass({
       .catch(err => console.log(err));
   },
 
-  /********************************/
-  /*              TODO            */
-  /********************************/
-  /*    DONT RENDER NAVBAR ITEM   */
-  /*  IF THAT COMPONENT IS ACTIVE */
-  /********************************/
-
   render() {
+    if (!this.state.loadingDone) {
+      return <div className="loading-screen">Loading...</div>
+    }
     return (
       <div id="app">
         <Navbar fixedTop collapseOnSelect>
@@ -110,7 +113,7 @@ const App = React.createClass({
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav pullRight>
-              { (this.state.loggedIn && this.state.user)
+              { !!this.state.user
                 ?
                 <NavDropdown id="user-dropdown" eventKey={3} title={this.getName()}>
                   <LinkContainer to="/polls/created">
@@ -128,7 +131,7 @@ const App = React.createClass({
                 </LinkContainer> }
             </Nav>
             <Nav>
-              { this.state.loggedIn &&
+              { !!this.state.user &&
               <LinkContainer to="/polls/new">
                 <NavItem eventKey={2}>New poll</NavItem>
               </LinkContainer> }
@@ -141,7 +144,7 @@ const App = React.createClass({
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        {this.getJumbotron(this.props.children)}
+        {this.getJumbotron()}
         {this.props.children}
       </div>
     );
