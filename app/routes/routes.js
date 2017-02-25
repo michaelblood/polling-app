@@ -2,28 +2,29 @@ const { isLoggedIn } = require('./auth');
 const React = require('react');
 const { renderToString } = require('react-dom/server');
 const { match, RouterContext } = require('react-router');
+const path = require('path');
 
 const routes = require('../../client/src/routes');
 
-const renderPage = (html) => {
-  console.log('rendering page');
-  `<!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="UTF-8"> 
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
-      <link rel="stylesheet" href="/index.css">
-      <title>mb-polling</title>
+// const renderPage = (html) => {
+//   console.log('rendering page');
+//   `<!DOCTYPE html>
+//   <html>
+//     <head>
+//       <meta charset="UTF-8"> 
+//       <meta name="viewport" content="width=device-width, initial-scale=1">
+//       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+//       <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+//       <link rel="stylesheet" href="/index.css">
+//       <title>mb-polling</title>
 
-    </head>
-    <body>
-      <div id=root>${html}</div>
-      <script src="/bundle.js"></script>
-    </body>
-  </html>`
-};
+//     </head>
+//     <body>
+//       <div id=root>${html}</div>
+//       <script src="/bundle.js"></script>
+//     </body>
+//   </html>`
+// };
 
 module.exports = (app, passport) => {
 
@@ -47,6 +48,7 @@ module.exports = (app, passport) => {
   });
 
   app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
     // match({ routes: routes, location: req.url }, (err, redirect, props) => {
     //   const html = renderToString(<RouterContext {...props}/>);
     //   res.send(renderPage(html));
