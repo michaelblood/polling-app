@@ -111,7 +111,6 @@ const CreatePoll = React.createClass({
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
     }).then((response) => {
-      console.log(response);
       if ('object' === typeof response) {
         return response;
       }

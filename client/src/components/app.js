@@ -41,8 +41,6 @@ const App = React.createClass({
         break;
       case 'PollInfo':
         return null;
-      case 'Profile':
-        return null;
       case 'Home':
         title = 'mb-polling.herokuapp.com';
         break;
@@ -127,7 +125,7 @@ const App = React.createClass({
               <LinkContainer to="/polls/new">
                 <NavItem eventKey={2}>New poll</NavItem>
               </LinkContainer> }
-              <LinkContainer to="/polls">
+              <LinkContainer to="/polls/all">
                 <NavItem eventKey={7}>All polls</NavItem>
               </LinkContainer>
               <LinkContainer to="/gibberish">
