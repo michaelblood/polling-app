@@ -2,7 +2,6 @@
 
 import React, { PropTypes } from 'react';
 import throttle from 'lodash/throttle';
-const fetch = require('whatwg-fetch');
 
 import AddOption from './addOption';
 import AlertPopup from '../common/alert';
