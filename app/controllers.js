@@ -230,7 +230,7 @@ const removeFavoritePoll = (userId, pollId, cb) => {
 const getSpecificPolls = (pollIds, cb) => {
   Polls.find({ _id: {
     $in: pollIds
-  }}, (err, docs) => {
+  }}, { __v: false, voters: false }, (err, docs) => {
     if (err) {
       cb(err);
       return;

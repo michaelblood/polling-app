@@ -64,7 +64,7 @@ module.exports = (app, passport) => {
     });
   });
 
-  /* FIX THE POST RESPONSE AND FIX THE ROUTER NOT KNOWING WHERE TO SEND SHIT */
+  /* ROUTER NOT KNOWING WHERE TO SEND SHIT */
 
   app.post('/api/polls/new', (req, res) => {
     let body = req.body;

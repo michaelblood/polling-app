@@ -47,19 +47,8 @@ module.exports = (app, passport) => {
 
   app.use((req, res) => {
     match({ routes: routes, location: req.url }, (err, redirect, props) => {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (redirect) {
-        res.redirect(redirect.pathname + redirect.search);
-        return;
-      }
-      if (props) {
-        const html = renderToString(<RouterContext {...props}/>);
-        res.send(renderPage(html));
-        return;
-      }
+      const html = renderToString(<RouterContext {...props}/>);
+      res.send(renderPage(html));
     });
   });
 };
