@@ -7,6 +7,7 @@ import Nav from 'react-bootstrap/lib/Nav';
 import NavItem from 'react-bootstrap/lib/NavItem';
 import NavDropdown from 'react-bootstrap/lib/NavDropdown';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
+const fetch = require('whatwg-fetch');
 
 const App = React.createClass({
   getInitialState() {
@@ -14,6 +15,10 @@ const App = React.createClass({
       loggedIn: false,
       user: null
     };
+  },
+
+  componentWillMount() {
+    this.determineLogin();
   },
 
   componentDidMount() {

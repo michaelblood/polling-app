@@ -6,7 +6,6 @@ const { match, RouterContext } = require('react-router');
 const routes = require('../../client/src/routes');
 
 const renderPage = (html) => {
-  console.log('rendering page');
   `<!DOCTYPE html>
   <html>
     <head>
