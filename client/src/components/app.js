@@ -39,6 +39,7 @@ const App = React.createClass({
   getJumbotron(element){
     if (!element) return null;
     let title = '';
+    console.log(this.props.pathname);
     switch(this.props.pathname) {
       case '/polls/new':
         title = 'New poll';

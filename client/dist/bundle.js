@@ -14872,6 +14872,7 @@ var App = _react2.default.createClass({
   getJumbotron: function getJumbotron(element) {
     if (!element) return null;
     var title = '';
+    console.log(this.props.pathname);
     switch (this.props.pathname) {
       case '/polls/new':
         title = 'New poll';
