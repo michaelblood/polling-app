@@ -36,38 +36,6 @@ const App = React.createClass({
     return names.username || 'User';
   },
 
-  getJumbotron(element){
-    if (!element) return null;
-    let title = '';
-    console.log(this.props);
-    switch(this.props.pathname) {
-      case '/polls/new':
-        title = 'New poll';
-        break;
-      case '/login':
-        title = 'Sign in';
-        break;
-      case '/polls/all':
-      case '/polls/created':
-      case '/polls/favorite':
-        title = 'Polls';
-        break;
-      case '/':
-        title = 'mb-polling.herokuapp.com';
-        break;
-      default:
-        if (this.props.pathname.indexOf('/poll/') >= 0) {
-          return null;
-        }
-        title = 'Not found';
-    }
-    return (
-      <div className="text-center page-title jumbotron">
-        <h1>{title}</h1>
-      </div>
-    );
-  },
-
   logout() {
     this.setState({
       user: null
@@ -101,7 +69,12 @@ const App = React.createClass({
 
   render() {
     if (!this.state.loadingDone) {
-      return <div className="loading-screen"><h1>Loading...</h1></div>
+      return (
+        <div className="loading-screen">
+          <h1>Loading...</h1>
+          <div className="loading-spinner" />
+        </div>
+      );
     }
     return (
       <div id="app">
@@ -145,7 +118,6 @@ const App = React.createClass({
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        {this.getJumbotron()}
         {this.props.children}
       </div>
     );

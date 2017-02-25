@@ -14869,41 +14869,6 @@ var App = _react2.default.createClass({
     if (names.displayName) return names.displayName;
     return names.username || 'User';
   },
-  getJumbotron: function getJumbotron(element) {
-    if (!element) return null;
-    var title = '';
-    console.log(this.props);
-    switch (this.props.pathname) {
-      case '/polls/new':
-        title = 'New poll';
-        break;
-      case '/login':
-        title = 'Sign in';
-        break;
-      case '/polls/all':
-      case '/polls/created':
-      case '/polls/favorite':
-        title = 'Polls';
-        break;
-      case '/':
-        title = 'mb-polling.herokuapp.com';
-        break;
-      default:
-        if (this.props.pathname.indexOf('/poll/') >= 0) {
-          return null;
-        }
-        title = 'Not found';
-    }
-    return _react2.default.createElement(
-      'div',
-      { className: 'text-center page-title jumbotron' },
-      _react2.default.createElement(
-        'h1',
-        null,
-        title
-      )
-    );
-  },
   logout: function logout() {
     this.setState({
       user: null
@@ -14944,7 +14909,8 @@ var App = _react2.default.createClass({
           'h1',
           null,
           'Loading...'
-        )
+        ),
+        _react2.default.createElement('div', { className: 'loading-spinner' })
       );
     }
     return _react2.default.createElement(
@@ -15043,7 +15009,6 @@ var App = _react2.default.createClass({
           )
         )
       ),
-      this.getJumbotron(),
       this.props.children
     );
   }
