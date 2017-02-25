@@ -11,7 +11,7 @@ require('./config/passport')(passport);
 global.Promise = require('bluebird');
 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/test-db';
-mongoose.Promise = require('bluebird');
+mongoose.Promise = global.Promise;
 mongoose.connect(uri);
 
 const app = express();

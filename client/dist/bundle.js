@@ -14855,6 +14855,7 @@ var App = _react2.default.createClass({
     this.determineLogin();
   },
   getName: function getName() {
+    console.log(req.user);
     var user = this.state.user;
     if (!user) return 'User';
     var service = user.loginMethod;

@@ -21,6 +21,7 @@ const App = React.createClass({
   },
   
   getName() {
+    console.log(req.user);
     let user = this.state.user;
     if (!user) return 'User';
     let service = user.loginMethod;
