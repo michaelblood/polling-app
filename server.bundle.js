@@ -2149,7 +2149,7 @@ module.exports = function (app, passport) {
     });
   });
 
-  /* FIX THE POST RESPONSE AND FIX THE ROUTER NOT KNOWING WHERE TO SEND SHIT */
+  /* ROUTER NOT KNOWING WHERE TO SEND SHIT */
 
   app.post('/api/polls/new', function (req, res) {
     var body = req.body;
@@ -2298,6 +2298,7 @@ var _require3 = __webpack_require__(52),
 var routes = __webpack_require__(97);
 
 var renderPage = function renderPage(html) {
+  console.log('rendering page');
   '<!DOCTYPE html>\n  <html>\n    <head>\n      <meta charset="UTF-8"> \n      <meta name="viewport" content="width=device-width, initial-scale=1">\n      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">\n      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> \n      <link rel="stylesheet" href="/index.css">\n      <title>mb-polling</title>\n\n    </head>\n    <body>\n      <div id=root>' + html + '</div>\n      <script src="/bundle.js"></script>\n    </body>\n  </html>';
 };
 
@@ -2322,21 +2323,10 @@ module.exports = function (app, passport) {
     res.redirect('/');
   });
 
-  app.use(function (req, res) {
+  app.get('*', function (req, res) {
     match({ routes: routes, location: req.url }, function (err, redirect, props) {
-      if (err) {
-        res.status(500).send(err);
-        return;
-      }
-      if (redirect) {
-        res.redirect(redirect.pathname + redirect.search);
-        return;
-      }
-      if (props) {
-        var html = renderToString(React.createElement(RouterContext, props));
-        res.send(renderPage(html));
-        return;
-      }
+      var html = renderToString(React.createElement(RouterContext, props));
+      res.send(renderPage(html));
     });
   });
 };
@@ -2721,7 +2711,7 @@ var removeFavoritePoll = function removeFavoritePoll(userId, pollId, cb) {
 var getSpecificPolls = function getSpecificPolls(pollIds, cb) {
   Polls.find({ _id: {
       $in: pollIds
-    } }, function (err, docs) {
+    } }, { __v: false, voters: false }, function (err, docs) {
     if (err) {
       cb(err);
       return;
@@ -2905,6 +2895,9 @@ var App = _react2.default.createClass({
       loggedIn: false,
       user: null
     };
+  },
+  componentWillMount: function componentWillMount() {
+    this.determineLogin();
   },
   componentDidMount: function componentDidMount() {
     this.determineLogin();
