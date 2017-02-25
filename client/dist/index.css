@@ -23,6 +23,9 @@ body {
   left: 0px;
   background: #456;
   color: #BCD;
+  width: 1vw;
+  height: 1vw;
+  text-align: center;
 }
 /*************************************/
 /*       CreatePoll component        */

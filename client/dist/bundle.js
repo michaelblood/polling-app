@@ -14939,7 +14939,11 @@ var App = _react2.default.createClass({
       return _react2.default.createElement(
         'div',
         { className: 'loading-screen' },
-        'Loading...'
+        _react2.default.createElement(
+          'h1',
+          null,
+          'Loading...'
+        )
       );
     }
     return _react2.default.createElement(

@@ -100,7 +100,7 @@ const App = React.createClass({
 
   render() {
     if (!this.state.loadingDone) {
-      return <div className="loading-screen">Loading...</div>
+      return <div className="loading-screen"><h1>Loading...</h1></div>
     }
     return (
       <div id="app">
