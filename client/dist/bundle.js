@@ -14843,22 +14843,25 @@ var _MenuItem2 = _interopRequireDefault(_MenuItem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/********************************/
+/*             @TODO            */
+/********************************/
+/*    DONT RENDER NAVBAR ITEM   */
+/*  IF THAT COMPONENT IS ACTIVE */
+/********************************/
+
 var App = _react2.default.createClass({
   displayName: 'App',
   getInitialState: function getInitialState() {
     return {
-      loggedIn: false,
+      loadingDone: false,
       user: null
     };
-  },
-  componentWillMount: function componentWillMount() {
-    this.determineLogin();
   },
   componentDidMount: function componentDidMount() {
     this.determineLogin();
   },
   getName: function getName() {
-    console.log(this.state.user);
     var user = this.state.user;
     if (!user) return 'User';
     var service = user.loginMethod;
@@ -14869,22 +14872,25 @@ var App = _react2.default.createClass({
   getJumbotron: function getJumbotron(element) {
     if (!element) return null;
     var title = '';
-    switch (element.type.displayName) {
-      case 'CreatePoll':
+    switch (this.props.pathname) {
+      case '/polls/new':
         title = 'New poll';
         break;
-      case 'Login':
+      case '/login':
         title = 'Sign in';
         break;
-      case 'PollsContainer':
+      case '/polls/all':
+      case '/polls/created':
+      case '/polls/favorite':
         title = 'Polls';
         break;
-      case 'PollInfo':
-        return null;
-      case 'Home':
+      case '/':
         title = 'mb-polling.herokuapp.com';
         break;
       default:
+        if (this.props.pathname.indexOf('/poll/') >= 0) {
+          return null;
+        }
         title = 'Not found';
     }
     return _react2.default.createElement(
@@ -14899,11 +14905,13 @@ var App = _react2.default.createClass({
   },
   logout: function logout() {
     this.setState({
-      user: null,
-      loggedIn: false
+      user: null
     });
   },
   determineLogin: function determineLogin() {
+    if (this.state.user) {
+      return;
+    }
     var app = this;
     fetch('/api/amiloggedin', {
       credentials: 'same-origin'
@@ -14912,13 +14920,13 @@ var App = _react2.default.createClass({
     }).then(function (json) {
       if (json.error) {
         app.setState({
-          loggedIn: false,
+          loadingDone: true,
           user: null
         });
         return;
       }
       app.setState({
-        loggedIn: true,
+        loadingDone: true,
         user: json
       }, app.forceUpdate());
       return;
@@ -14926,16 +14934,14 @@ var App = _react2.default.createClass({
       return console.log(err);
     });
   },
-
-
-  /********************************/
-  /*              TODO            */
-  /********************************/
-  /*    DONT RENDER NAVBAR ITEM   */
-  /*  IF THAT COMPONENT IS ACTIVE */
-  /********************************/
-
   render: function render() {
+    if (!this.state.loadingDone) {
+      return _react2.default.createElement(
+        'div',
+        { className: 'loading-screen' },
+        'Loading...'
+      );
+    }
     return _react2.default.createElement(
       'div',
       { id: 'app' },
@@ -14962,7 +14968,7 @@ var App = _react2.default.createClass({
           _react2.default.createElement(
             _Nav2.default,
             { pullRight: true },
-            this.state.loggedIn && this.state.user ? _react2.default.createElement(
+            !!this.state.user ? _react2.default.createElement(
               _NavDropdown2.default,
               { id: 'user-dropdown', eventKey: 3, title: this.getName() },
               _react2.default.createElement(
@@ -15002,7 +15008,7 @@ var App = _react2.default.createClass({
           _react2.default.createElement(
             _Nav2.default,
             null,
-            this.state.loggedIn && _react2.default.createElement(
+            !!this.state.user && _react2.default.createElement(
               _reactRouterBootstrap.LinkContainer,
               { to: '/polls/new' },
               _react2.default.createElement(
@@ -15032,7 +15038,7 @@ var App = _react2.default.createClass({
           )
         )
       ),
-      this.getJumbotron(this.props.children),
+      this.getJumbotron(),
       this.props.children
     );
   }
@@ -15628,6 +15634,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var PollsContainer = _react2.default.createClass({
   displayName: 'PollsContainer',
+  getInitialState: function getInitialState() {
+    return {
+      polls: []
+    };
+  },
+  sort: function sort(filter) {},
+  renderPolls: function renderPolls() {},
   render: function render() {
     return !this.props.params.filter ? _react2.default.createElement(
       'div',
