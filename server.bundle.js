@@ -2881,13 +2881,13 @@ var App = _react2.default.createClass({
     this.determineLogin();
   },
   getName: function getName() {
-    console.log(req.user);
+    console.log(this.state.user);
     var user = this.state.user;
     if (!user) return 'User';
     var service = user.loginMethod;
     var names = user[service];
-    if (names.username) return name.username;
-    return names.displayName || 'User';
+    if (names.displayName) return names.displayName;
+    return names.username || 'User';
   },
   getJumbotron: function getJumbotron(element) {
     if (!element) return null;
@@ -9423,9 +9423,17 @@ var apiRoutes = __webpack_require__(77);
 __webpack_require__(79)(passport);
 global.Promise = __webpack_require__(80);
 
+var options = {
+  server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
+  replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }
+};
 var uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/test-db';
 mongoose.Promise = global.Promise;
-mongoose.connect(uri);
+mongoose.connect(uri, options);
+mongoose.connection.on('error', function () {
+  console.log('connection to mlab failed');
+  process.exit(1);
+});
 
 var app = express();
 app.use(express.static(path.join(__dirname, 'client', 'dist')));

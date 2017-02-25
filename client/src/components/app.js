@@ -26,7 +26,7 @@ const App = React.createClass({
     if (!user) return 'User';
     let service = user.loginMethod;
     let names = user[service];
-    if (names.username) return name.displayName;
+    if (names.displayName) return names.displayName;
     return names.username || 'User';
   },
 

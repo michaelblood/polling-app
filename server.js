@@ -10,9 +10,17 @@ const apiRoutes = require('./app/routes/api.routes.js');
 require('./config/passport')(passport);
 global.Promise = require('bluebird');
 
+const options = {
+  server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
+  replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } }
+}; 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/test-db';
 mongoose.Promise = global.Promise;
-mongoose.connect(uri);
+mongoose.connect(uri, options);
+mongoose.connection.on('error', () => {
+  console.log('connection to mlab failed');
+  process.exit(1); 
+});
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'client', 'dist')));

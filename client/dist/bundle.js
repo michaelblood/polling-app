@@ -14860,7 +14860,7 @@ var App = _react2.default.createClass({
     if (!user) return 'User';
     var service = user.loginMethod;
     var names = user[service];
-    if (names.username) return name.displayName;
+    if (names.displayName) return names.displayName;
     return names.username || 'User';
   },
   getJumbotron: function getJumbotron(element) {
