@@ -6,6 +6,7 @@ const { match, RouterContext } = require('react-router');
 const routes = require('../../client/src/routes');
 
 const renderPage = (html) => {
+  console.log('rendering page');
   `<!DOCTYPE html>
   <html>
     <head>
@@ -45,10 +46,10 @@ module.exports = (app, passport) => {
     res.redirect('/');
   });
 
-  app.use((req, res) => {
-    match({ routes: routes, location: req.url }, (err, redirect, props) => {
-      const html = renderToString(<RouterContext {...props}/>);
-      res.send(renderPage(html));
-    });
+  app.get('*', (req, res) => {
+    // match({ routes: routes, location: req.url }, (err, redirect, props) => {
+    //   const html = renderToString(<RouterContext {...props}/>);
+    //   res.send(renderPage(html));
+    // });
   });
 };
