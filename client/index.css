@@ -14,7 +14,7 @@ body {
   background: #f5f5f5;
 }
 .dropdown-menu li:hover{
-  background-color: #FFF;
+  background-color: #31708f;
 }
 /*************************************/
 /*       CreatePoll component        */

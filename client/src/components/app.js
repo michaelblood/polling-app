@@ -22,8 +22,11 @@ const App = React.createClass({
   
   getName() {
     let user = this.state.user;
-    if (!user) return 'User';
-    return user.username || user.displayName;
+    if (!user) return '';
+    let service = user.loginMethod;
+    let names = user[service];
+    if (names.username) return name.username;
+    return names.displayName || 'User';
   },
 
   getJumbotron(element){
@@ -91,7 +94,6 @@ const App = React.createClass({
   /********************************/
 
   render() {
-    console.log(this.state.user);
     return (
       <div id="app">
         <Navbar fixedTop collapseOnSelect>
