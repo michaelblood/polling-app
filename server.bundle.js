@@ -2149,6 +2149,8 @@ module.exports = function (app, passport) {
     });
   });
 
+  /* FIX THE POST RESPONSE AND FIX THE ROUTER NOT KNOWING WHERE TO SEND SHIT */
+
   app.post('/api/polls/new', function (req, res) {
     var body = req.body;
     if ('string' == typeof req.body) body = JSON.parse(req.body);
@@ -2166,14 +2168,12 @@ module.exports = function (app, passport) {
       res.json({ error: 'you must be logged in to do that' });
       return;
     }
-    console.log('user:', req.user);
-    console.log('new poll:', req.body);
     createPoll(req.user._id, pollName, canAddNewOptions, options, function (err, poll) {
       if (err) {
         res.json({ error: err.toString() });
         return;
       }
-      res.json(poll);
+      res.redirect('/poll/' + poll._id);
     });
   });
 
@@ -2271,7 +2271,7 @@ module.exports = function (app, passport) {
         res.json({ error: err.toString() });
         return;
       }
-      res.json(poll);
+      res.send(poll._id);
     });
   });
 };
@@ -2332,8 +2332,11 @@ module.exports = function (app, passport) {
         res.redirect(redirect.pathname + redirect.search);
         return;
       }
-      var html = renderToString(React.createElement(RouterContext, props));
-      res.send(renderPage(html));
+      if (props) {
+        var html = renderToString(React.createElement(RouterContext, props));
+        res.send(renderPage(html));
+        return;
+      }
     });
   });
 };

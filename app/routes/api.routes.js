@@ -64,6 +64,8 @@ module.exports = (app, passport) => {
     });
   });
   
+  /* FIX THE POST RESPONSE AND FIX THE ROUTER NOT KNOWING WHERE TO SEND SHIT */
+
   app.post('/api/polls/new', (req, res) => {
     let body = req.body;
     if ('string' == typeof req.body) body = JSON.parse(req.body);
@@ -77,14 +79,12 @@ module.exports = (app, passport) => {
       res.json(({error: 'you must be logged in to do that'}));
       return;
     }
-    console.log('user:', req.user);
-    console.log('new poll:', req.body);
     createPoll(req.user._id, pollName, canAddNewOptions, options, (err, poll) => {
       if (err) {
         res.json({error: err.toString()});
         return;
       }
-      res.json(poll);
+      res.redirect(`/poll/${poll._id}`);
     });
   });
 
@@ -182,7 +182,7 @@ module.exports = (app, passport) => {
         res.json({error: err.toString()});
         return;
       }
-      res.json(poll);
+      res.send(poll._id);
     });
   });
 };
