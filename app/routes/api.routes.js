@@ -27,21 +27,6 @@ module.exports = (app, passport) => {
     res.json({error: 'Not logged in'});
   });
 
-  app.get('/api/polls', (req, res) => {
-    let offset = Number(req.query.offset) || 0;
-    getPolls(offset, (err, polls) => {
-      if (err) {
-        res.json({error: err.toString()});
-        return;
-      }
-      if (polls.length < 6) {
-        res.json({polls: polls, nextPageStart: -1});
-        return;
-      }
-      res.json({ polls: polls, nextPageStart: offset + polls.length });
-    });
-  });
-
   app.get('/api/polls/favorites', isLoggedIn, (req, res) => {
     let offset = Math.abs(Number(req.query.offset) || 0);
     getFavoritePolls(req.user._id, offset, (err, polls, nextPageStart) => {
@@ -64,6 +49,21 @@ module.exports = (app, passport) => {
     });
   });
   
+  app.get('/api/polls', (req, res) => {
+    let offset = Number(req.query.offset) || 0;
+    getPolls(offset, (err, polls) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      if (polls.length < 6) {
+        res.json({polls: polls, nextPageStart: -1});
+        return;
+      }
+      res.json({ polls: polls, nextPageStart: offset + polls.length });
+    });
+  });
+
   /* FIX THE POST RESPONSE AND FIX THE ROUTER NOT KNOWING WHERE TO SEND SHIT */
 
   app.post('/api/polls/new', (req, res) => {
@@ -81,7 +81,7 @@ module.exports = (app, passport) => {
     }
     createPoll(req.user._id, pollName, canAddNewOptions, options, (err, poll) => {
       if (err) {
-        res.json({error: err.toString()});
+        res.status(500).json({error: err.toString()});
         return;
       }
       res.redirect(`/poll/${poll._id}`);

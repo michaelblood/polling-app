@@ -15328,22 +15328,22 @@ var CreatePoll = _react2.default.createClass({
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
     }).then(function (response) {
-      console.log(response);
       if ('object' === (typeof response === 'undefined' ? 'undefined' : _typeof(response))) {
         return response;
       }
       return response.json();
     }).then(function (json) {
-      if (!json._id) {
+      if (!json.url) {
         self.setState({
           alert: {
             type: 'danger',
-            message: json.error || 'Something went wrong. Try again later.'
+            message: 'Something went wrong. Try again later.'
           }
         });
         return;
       }
-      self.context.router.push('/polls/' + json._id);
+      var url = json.url;
+      self.context.router.push(url.slice(url.indexOf('/poll/')));
     }).catch(function (err) {
       return console.log(err);
     });

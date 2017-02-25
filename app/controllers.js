@@ -4,7 +4,7 @@ const Polls = require('./models/poll');
 
 // callback signature (error, [list of polls]) => {}
 const getPolls = (offset = 0, cb) => {
-  Polls.find({}, {__v: false})
+  Polls.find({}, {__v: false, voters: false})
     .skip(offset)
     .limit(6)
     .exec((err, docs) => {
@@ -227,6 +227,18 @@ const removeFavoritePoll = (userId, pollId, cb) => {
   });
 };
 
+const getSpecificPolls = (pollIds, cb) => {
+  Polls.find({ _id: {
+    $in: pollIds
+  }}, (err, docs) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    cb(null, docs);
+  });
+};
+
 const getFavoritePolls = (userId, offset = 0, cb) => {
   Users.findById(userId, (err, user) => {
     if (err) {
@@ -241,7 +253,14 @@ const getFavoritePolls = (userId, offset = 0, cb) => {
     if (user.savedPolls.length < nextPage) {
       nextPage = -1;
     }
-    cb(null, user.savedPolls.slice(offset, offset+6), nextPage)
+    let pollIds = user.savedPolls.slice(offset, offset+6);
+    getSpecificPolls(pollIds, (err, polls) => {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, polls, nextPage)
+    });
   });
 };
 
@@ -259,7 +278,14 @@ const getCreatedPolls = (userId, offset = 0, cb) => {
     if (user.createdPolls.length < nextPage) {
       nextPage = -1;
     }
-    cb(null, user.createdPolls.slice(offset, offset+6), nextPage)
+    let pollIds = user.createdPolls.slice(offset, offset+6);
+    getSpecificPolls(pollIds, (err, polls) => {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, polls, nextPage);
+    });
   });
 };
 

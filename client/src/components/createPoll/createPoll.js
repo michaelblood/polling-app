@@ -111,22 +111,22 @@ const CreatePoll = React.createClass({
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
     }).then((response) => {
-      console.log(response);
       if ('object' === typeof response) {
         return response;
       }
       return response.json();
     }).then(json => {
-      if (!json._id) {
+      if (!json.url) {
         self.setState({
           alert: {
             type: 'danger',
-            message: json.error || 'Something went wrong. Try again later.'
+            message: 'Something went wrong. Try again later.'
           }
         });
         return;
       }
-      self.context.router.push(`/polls/${json._id}`);
+      let url = json.url;
+      self.context.router.push(url.slice(url.indexOf('/poll/')));
     }).catch((err) => console.log(err));
   },
 

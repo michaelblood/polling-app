@@ -2112,21 +2112,6 @@ module.exports = function (app, passport) {
     res.json({ error: 'Not logged in' });
   });
 
-  app.get('/api/polls', function (req, res) {
-    var offset = Number(req.query.offset) || 0;
-    getPolls(offset, function (err, polls) {
-      if (err) {
-        res.json({ error: err.toString() });
-        return;
-      }
-      if (polls.length < 6) {
-        res.json({ polls: polls, nextPageStart: -1 });
-        return;
-      }
-      res.json({ polls: polls, nextPageStart: offset + polls.length });
-    });
-  });
-
   app.get('/api/polls/favorites', isLoggedIn, function (req, res) {
     var offset = Math.abs(Number(req.query.offset) || 0);
     getFavoritePolls(req.user._id, offset, function (err, polls, nextPageStart) {
@@ -2146,6 +2131,21 @@ module.exports = function (app, passport) {
         return;
       }
       res.json({ polls: polls, nextPageStart: nextPageStart });
+    });
+  });
+
+  app.get('/api/polls', function (req, res) {
+    var offset = Number(req.query.offset) || 0;
+    getPolls(offset, function (err, polls) {
+      if (err) {
+        res.json({ error: err.toString() });
+        return;
+      }
+      if (polls.length < 6) {
+        res.json({ polls: polls, nextPageStart: -1 });
+        return;
+      }
+      res.json({ polls: polls, nextPageStart: offset + polls.length });
     });
   });
 
@@ -2170,7 +2170,7 @@ module.exports = function (app, passport) {
     }
     createPoll(req.user._id, pollName, canAddNewOptions, options, function (err, poll) {
       if (err) {
-        res.json({ error: err.toString() });
+        res.status(500).json({ error: err.toString() });
         return;
       }
       res.redirect('/poll/' + poll._id);
@@ -2496,7 +2496,7 @@ var getPolls = function getPolls() {
   var offset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
   var cb = arguments[1];
 
-  Polls.find({}, { __v: false }).skip(offset).limit(6).exec(function (err, docs) {
+  Polls.find({}, { __v: false, voters: false }).skip(offset).limit(6).exec(function (err, docs) {
     if (err) {
       cb(err);
       return;
@@ -2718,6 +2718,18 @@ var removeFavoritePoll = function removeFavoritePoll(userId, pollId, cb) {
   });
 };
 
+var getSpecificPolls = function getSpecificPolls(pollIds, cb) {
+  Polls.find({ _id: {
+      $in: pollIds
+    } }, function (err, docs) {
+    if (err) {
+      cb(err);
+      return;
+    }
+    cb(null, docs);
+  });
+};
+
 var getFavoritePolls = function getFavoritePolls(userId) {
   var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
   var cb = arguments[2];
@@ -2735,7 +2747,14 @@ var getFavoritePolls = function getFavoritePolls(userId) {
     if (user.savedPolls.length < nextPage) {
       nextPage = -1;
     }
-    cb(null, user.savedPolls.slice(offset, offset + 6), nextPage);
+    var pollIds = user.savedPolls.slice(offset, offset + 6);
+    getSpecificPolls(pollIds, function (err, polls) {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, polls, nextPage);
+    });
   });
 };
 
@@ -2756,7 +2775,14 @@ var getCreatedPolls = function getCreatedPolls(userId) {
     if (user.createdPolls.length < nextPage) {
       nextPage = -1;
     }
-    cb(null, user.createdPolls.slice(offset, offset + 6), nextPage);
+    var pollIds = user.createdPolls.slice(offset, offset + 6);
+    getSpecificPolls(pollIds, function (err, polls) {
+      if (err) {
+        cb(err);
+        return;
+      }
+      cb(null, polls, nextPage);
+    });
   });
 };
 
@@ -3357,22 +3383,22 @@ var CreatePoll = _react2.default.createClass({
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
     }).then(function (response) {
-      console.log(response);
       if ('object' === (typeof response === 'undefined' ? 'undefined' : _typeof(response))) {
         return response;
       }
       return response.json();
     }).then(function (json) {
-      if (!json._id) {
+      if (!json.url) {
         self.setState({
           alert: {
             type: 'danger',
-            message: json.error || 'Something went wrong. Try again later.'
+            message: 'Something went wrong. Try again later.'
           }
         });
         return;
       }
-      self.context.router.push('/polls/' + json._id);
+      var url = json.url;
+      self.context.router.push(url.slice(url.indexOf('/poll/')));
     }).catch(function (err) {
       return console.log(err);
     });
