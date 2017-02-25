@@ -16,7 +16,7 @@ mongoose.connect(uri);
 
 const app = express();
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
-// app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 app.set('port', process.env.PORT || 3000);
