@@ -38,7 +38,7 @@ body {
   }
 }
 .loading-spinner {
-  border: 16px solid #BCD; /* Light grey */
+  border-top: 16px solid #BCD;
   border-radius: 50%;
   width: 120px;
   height: 120px;
