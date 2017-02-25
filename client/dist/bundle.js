@@ -14855,13 +14855,13 @@ var App = _react2.default.createClass({
     this.determineLogin();
   },
   getName: function getName() {
-    console.log(req.user);
+    console.log(this.state.user);
     var user = this.state.user;
     if (!user) return 'User';
     var service = user.loginMethod;
     var names = user[service];
-    if (names.username) return name.username;
-    return names.displayName || 'User';
+    if (names.username) return name.displayName;
+    return names.username || 'User';
   },
   getJumbotron: function getJumbotron(element) {
     if (!element) return null;

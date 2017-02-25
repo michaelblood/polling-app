@@ -21,13 +21,13 @@ const App = React.createClass({
   },
   
   getName() {
-    console.log(req.user);
+    console.log(this.state.user);
     let user = this.state.user;
     if (!user) return 'User';
     let service = user.loginMethod;
     let names = user[service];
-    if (names.username) return name.username;
-    return names.displayName || 'User';
+    if (names.username) return name.displayName;
+    return names.username || 'User';
   },
 
   getJumbotron(element){
