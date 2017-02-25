@@ -22,7 +22,7 @@ const App = React.createClass({
   
   getName() {
     let user = this.state.user;
-    if (!user) return '';
+    if (!user) return 'User';
     let service = user.loginMethod;
     let names = user[service];
     if (names.username) return name.username;

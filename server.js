@@ -15,7 +15,7 @@ mongoose.Promise = require('bluebird');
 mongoose.connect(uri);
 
 const app = express();
-app.use(express.static(path.join(__dirname, 'client')));
+app.use(express.static(path.join(__dirname, 'client', 'dist')));
 // app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
