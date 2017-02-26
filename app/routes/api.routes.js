@@ -12,7 +12,7 @@ const {
   getRandomPoll,
   getPollById
 } = require('../controllers');  
-const { isLoggedIn } = require('./auth');
+const { apiIsLoggedIn } = require('./auth');
 
 module.exports = (app, passport) => {
   app.use(function(req, res, next) {
@@ -29,7 +29,7 @@ module.exports = (app, passport) => {
     res.json({error: 'Not logged in'});
   });
 
-  app.get('/api/polls/favorites', isLoggedIn, (req, res) => {
+  app.get('/api/polls/favorites', apiIsLoggedIn, (req, res) => {
     let offset = Math.abs(Number(req.query.offset) || 0);
     getFavoritePolls(req.user._id, offset, (err, polls, nextPageStart) => {
       if (err) {
@@ -40,7 +40,7 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.get('/api/polls/created', isLoggedIn, (req, res) => {
+  app.get('/api/polls/created', apiIsLoggedIn, (req, res) => {
     let offset = Math.abs(Number(req.query.offset) || 0);
     getCreatedPolls(req.user._id, offset, (err, polls, nextPageStart) => {
       if (err) {
@@ -79,7 +79,7 @@ module.exports = (app, passport) => {
     })
   });
 
-  app.get('/api/polls', (req, res) => {
+  app.get('/api/polls/all', (req, res) => {
     let offset = Number(req.query.offset) || 0;
     getPolls(offset, (err, polls) => {
       if (err) {
@@ -116,7 +116,7 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.post('/api/polls/:pollId/delete', isLoggedIn, (req, res) => {
+  app.post('/api/polls/:pollId/delete', apiIsLoggedIn, (req, res) => {
     let pollId = req.params.pollId;
     let userId = req.user._id;
     deletePoll(userId, pollId, (err, msg) => {
@@ -173,7 +173,7 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.post('/api/polls/:pollId/:optionId/delete', isLoggedIn, (req, res) => {
+  app.post('/api/polls/:pollId/:optionId/delete', apiIsLoggedIn, (req, res) => {
     let pollId = req.params.pollId;
     let optionId = req.params.optionId;
     if (req.user.createdPolls.indexOf(pollId) < 0 ) {
@@ -189,7 +189,7 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.post('/api/polls/:pollId/toggleFavorite', isLoggedIn, (req, res) => {
+  app.post('/api/polls/:pollId/toggleFavorite', apiIsLoggedIn, (req, res) => {
     let pollId = req.params.pollId;
     if (!req.user) {
       res.json({error: 'something went wrong'});
