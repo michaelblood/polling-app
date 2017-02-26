@@ -37,9 +37,12 @@ const PollsContainer = React.createClass({
 
   fetch() {
     let filter = this.props.params.filter;
+
     let nextPage = this.state.nextPage[filter] || 0;
     if (nextPage === -1) alert('no more polls');
+
     this.setState({ fetching: true });
+
     let self = this;
     fetch(`/api/polls/${filter}?offset=${nextPage}`, {
       credentials: 'same-origin'
@@ -66,8 +69,10 @@ const PollsContainer = React.createClass({
           created: self.state.nextPage.created
         };
         nextPage[filter] = json.nextPageStart;
+
         let newPolls = polls[filter].concat(json.polls);
         polls[filter] = newPolls;
+        
         self.setState({
           fetching: false,
           polls: polls,

@@ -14,9 +14,11 @@ const MiniPoll = ({ poll, onClick }) => {
     if (cur.count > prev.count) return cur;
     return prev;
   }).color;
+
   let optionText = poll.options.map((el) => {
-    return el.option;
+    return <i>{el.option}</i>;
   }).join(' | ');
+  
   return (
     <div className="col-xs-12 col-sm-6">
       <div
@@ -31,7 +33,7 @@ const MiniPoll = ({ poll, onClick }) => {
           <h1 className="mini-poll-heading" style={{color: color}}>{poll.name}</h1>
         </div>
         <div className="panel-body">
-          <h3><i>{optionText}</i></h3>
+          <h3>{optionText}</h3>
         </div>
       </div>
     </div>

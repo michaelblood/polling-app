@@ -15086,9 +15086,15 @@ var MiniPoll = function MiniPoll(_ref) {
     if (cur.count > prev.count) return cur;
     return prev;
   }).color;
+
   var optionText = poll.options.map(function (el) {
-    return el.option;
+    return _react2.default.createElement(
+      'i',
+      null,
+      el.option
+    );
   }).join(' | ');
+
   return _react2.default.createElement(
     'div',
     { className: 'col-xs-12 col-sm-6' },
@@ -15119,11 +15125,7 @@ var MiniPoll = function MiniPoll(_ref) {
         _react2.default.createElement(
           'h3',
           null,
-          _react2.default.createElement(
-            'i',
-            null,
-            optionText
-          )
+          optionText
         )
       )
     )
@@ -15825,9 +15827,12 @@ var PollsContainer = _react2.default.createClass({
     return fetch;
   }(function () {
     var filter = this.props.params.filter;
+
     var nextPage = this.state.nextPage[filter] || 0;
     if (nextPage === -1) alert('no more polls');
+
     this.setState({ fetching: true });
+
     var self = this;
     fetch('/api/polls/' + filter + '?offset=' + nextPage, {
       credentials: 'same-origin'
@@ -15854,8 +15859,10 @@ var PollsContainer = _react2.default.createClass({
         created: self.state.nextPage.created
       };
       nextPage[filter] = json.nextPageStart;
+
       var newPolls = polls[filter].concat(json.polls);
       polls[filter] = newPolls;
+
       self.setState({
         fetching: false,
         polls: polls,
