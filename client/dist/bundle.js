@@ -15825,7 +15825,7 @@ var PollsContainer = _react2.default.createClass({
     return fetch;
   }(function () {
     var filter = this.props.params.filter;
-    var nextPage = this.state.nextPage[filter];
+    var nextPage = this.state.nextPage[filter] || 0;
     if (nextPage === -1) alert('no more polls');
     this.setState({ fetching: true });
     var self = this;

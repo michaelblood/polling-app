@@ -37,7 +37,7 @@ const PollsContainer = React.createClass({
 
   fetch() {
     let filter = this.props.params.filter;
-    let nextPage = this.state.nextPage[filter];
+    let nextPage = this.state.nextPage[filter] || 0;
     if (nextPage === -1) alert('no more polls');
     this.setState({ fetching: true });
     let self = this;
