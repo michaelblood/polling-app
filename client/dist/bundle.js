@@ -15809,7 +15809,7 @@ var PollsContainer = _react2.default.createClass({
     this.fetch();
   },
   componentDidUpdate: function componentDidUpdate(prevProps) {
-    if (this.props.filter !== prevProps.filter) {
+    if (this.props.params.filter !== prevProps.params.filter) {
       this.fetch();
     }
   },

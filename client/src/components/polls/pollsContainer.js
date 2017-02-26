@@ -30,7 +30,7 @@ const PollsContainer = React.createClass({
   },
 
   componentDidUpdate(prevProps) {
-    if (this.props.filter !== prevProps.filter) {
+    if (this.props.params.filter !== prevProps.params.filter) {
       this.fetch();
     }
   },
