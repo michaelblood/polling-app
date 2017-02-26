@@ -16,6 +16,38 @@ const getPolls = (offset = 0, cb) => {
     });
 };
 
+const getPollById = (id, cb) => {
+  if (!id) {
+    cb('You must specify an id');
+    return;
+  }
+  Polls.findById(id, { __v: false, voters: false }, (err, poll) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (!poll) {
+      cb('Poll not found');
+      return;
+    }
+    cb(null, poll);
+  })
+};
+
+const getRandomPoll = (cb) => {
+  Polls.find({}, {__v: false, voters: false}, (err, polls) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    if (polls.length < 1) {
+      cb(null, null);
+    }
+    let rand = Math.floor(Math.random() * polls.length);
+    cb(null, polls[rand]);
+  });
+}
+
 const deletePoll = (requesterId, pollId, cb) => {
   Users.findById(requesterId, (err, user) => {
     if (err) {
@@ -321,5 +353,7 @@ module.exports = {
   incrementOption,
   removeFavoritePoll,
   getFavoritePolls,
-  getCreatedPolls
+  getCreatedPolls,
+  getPollById,
+  getRandomPoll
 };

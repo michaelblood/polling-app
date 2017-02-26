@@ -21,13 +21,13 @@ body {
   position: fixed;
   top: 0px;
   left: 0px;
-  background: #456;
-  color: #BCD;
-  width: 1vw;
-  height: 1vw;
+  background: transparent;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 42;
 }
 @keyframes spin {
   0% {
@@ -38,12 +38,15 @@ body {
   }
 }
 .loading-spinner {
-  border-top: 16px solid #BCD;
+  border: 16px solid #BCD;
+  border-top: 16px solid #31708f;
+  /*border-bottom: 16px solid #31708f;*/
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   animation: spin 1.2s linear infinite;
 }
+
 /*************************************/
 /*       CreatePoll component        */
 /*************************************/
@@ -104,4 +107,44 @@ body {
 /*************************************/
 /*          Login component          */
 /*************************************/
+.login-page {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.login {
+  margin: 0px;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+.login-left {
+  color: #f5f5f5;
+  background: #31708f;
+}
+.login-right {
+  background: #f5f5f5;
+  color: #31708f;
+}
+.login a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/*************************************/
+/*         MiniPoll component        */
+/*************************************/
+.mini-poll {
+  overflow: hidden;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 1px 0px rgba(0,0,0,.175);
+}

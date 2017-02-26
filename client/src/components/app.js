@@ -1,10 +1,3 @@
-  /********************************/
-  /*             @TODO            */
-  /********************************/
-  /*    DONT RENDER NAVBAR ITEM   */
-  /*  IF THAT COMPONENT IS ACTIVE */
-  /********************************/
-
 import React from 'react';
 import { Link } from 'react-router';
 
@@ -18,7 +11,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem';
 const App = React.createClass({
   getInitialState() {
     return {
-      loadingDone: false,
+      fetching: false,
       user: null
     };
   },
@@ -46,6 +39,9 @@ const App = React.createClass({
     if (this.state.user) {
       return;
     }
+    this.setState({
+      fetching: true
+    });
     let app = this;
     fetch('/api/amiloggedin', {
       credentials: 'same-origin'
@@ -53,25 +49,24 @@ const App = React.createClass({
       .then(json => {
         if (json.error) {
           app.setState({
-            loadingDone: true,
+            fetching: false,
             user: null
           });
           return;
         }
         app.setState({
-          loadingDone: true,
+          fetching: false,
           user: json
         }, app.forceUpdate());
         return;
       })
       .catch(err => console.log(err));
   },
-
+  
   render() {
-    if (!this.state.loadingDone) {
+    if (this.state.fetching) {
       return (
         <div className="loading-screen">
-          <h1>Loading...</h1>
           <div className="loading-spinner" />
         </div>
       );
@@ -112,8 +107,8 @@ const App = React.createClass({
               <LinkContainer to="/polls/all">
                 <NavItem eventKey={7}>All polls</NavItem>
               </LinkContainer>
-              <LinkContainer to="/gibberish">
-                <NavItem eventKey={8}>404 test</NavItem>
+              <LinkContainer to="/poll/random">
+                <NavItem eventKey={8}>Random poll</NavItem>
               </LinkContainer>
             </Nav>
           </Navbar.Collapse>

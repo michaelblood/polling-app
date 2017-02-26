@@ -8,7 +8,9 @@ const {
   incrementOption,
   removeFavoritePoll,
   getFavoritePolls,
-  getCreatedPolls
+  getCreatedPolls,
+  getRandomPoll,
+  getPollById
 } = require('../controllers');  
 const { isLoggedIn } = require('./auth');
 
@@ -49,6 +51,34 @@ module.exports = (app, passport) => {
     });
   });
   
+  app.get('/api/polls/random', (req, res) => {
+    getRandomPoll((err, poll) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      if (!poll) {
+        res.json({error: 'no polls found'});
+        return;
+      }
+      res.json(poll._id);
+    });
+  });
+
+  app.get('/api/poll/:id', (req, res) => {
+    if (!req.params.id) {
+      res.json({error: 'no id specified'});
+      return;
+    }
+    getPollById(req.params.id, (err, poll) => {
+      if (err) {
+        res.json({error: err.toString()});
+        return;
+      }
+      res.json(poll);
+    })
+  });
+
   app.get('/api/polls', (req, res) => {
     let offset = Number(req.query.offset) || 0;
     getPolls(offset, (err, polls) => {
@@ -63,8 +93,6 @@ module.exports = (app, passport) => {
       res.json({ polls: polls, nextPageStart: offset + polls.length });
     });
   });
-
-  /* ROUTER NOT KNOWING WHERE TO SEND SHIT */
 
   app.post('/api/polls/new', (req, res) => {
     let body = req.body;
