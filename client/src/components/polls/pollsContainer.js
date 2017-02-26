@@ -44,8 +44,8 @@ const PollsContainer = React.createClass({
     this.setState({ fetching: true });
 
     let self = this;
-    fetch(`https://mb-polling.herokuapp.com/api/polls/${filter}?offset=${nextPage}`, {
-      // credentials: 'same-origin'
+    fetch(`/api/polls/${filter}?offset=${nextPage}`, {
+      credentials: 'same-origin'
     })
       .then(response => response.json())
       .then(json => {
