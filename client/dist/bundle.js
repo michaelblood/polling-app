@@ -15829,7 +15829,9 @@ var PollsContainer = _react2.default.createClass({
     if (nextPage === -1) alert('no more polls');
     this.setState({ fetching: true });
     var self = this;
-    fetch('/api/polls/' + filter + '?offset=' + nextPage).then(function (response) {
+    fetch('/api/polls/' + filter + '?offset=' + nextPage, {
+      credentials: 'same-origin'
+    }).then(function (response) {
       return response.json();
     }).then(function (json) {
       if (json.error) {

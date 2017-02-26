@@ -41,7 +41,9 @@ const PollsContainer = React.createClass({
     if (nextPage === -1) alert('no more polls');
     this.setState({ fetching: true });
     let self = this;
-    fetch(`/api/polls/${filter}?offset=${nextPage}`)
+    fetch(`/api/polls/${filter}?offset=${nextPage}`, {
+      credentials: 'same-origin'
+    })
       .then(response => response.json())
       .then(json => {
         if (json.error) {
