@@ -15087,21 +15087,16 @@ var MiniPoll = function MiniPoll(_ref) {
     return prev;
   }).color;
 
-  var optionText = poll.options.map(function (el) {
-    return _react2.default.createElement(
-      'i',
-      null,
-      el.option
-    );
-  }).join(' | ');
-
+  var created = new Date(poll.created);
+  var date = created.toLocaleDateString();
+  var time = created.toLocaleTimeString();
   return _react2.default.createElement(
     'div',
     { className: 'col-xs-12 col-sm-6' },
     _react2.default.createElement(
       'div',
       {
-        style: { borderColor: color, borderWidth: '5px', backgroundColor: '#FFF' },
+        style: { borderColor: color, boarderRadius: '3px', borderWidth: '5px', backgroundColor: '#FFF' },
         className: 'panel panel-default mini-poll',
         onClick: function onClick() {
           return _onClick(poll._id);
@@ -15114,7 +15109,7 @@ var MiniPoll = function MiniPoll(_ref) {
           style: { backgroundColor: getReadableColor(color) }
         },
         _react2.default.createElement(
-          'h1',
+          'h3',
           { className: 'mini-poll-heading', style: { color: color } },
           poll.name
         )
@@ -15123,9 +15118,18 @@ var MiniPoll = function MiniPoll(_ref) {
         'div',
         { className: 'panel-body' },
         _react2.default.createElement(
-          'h3',
-          null,
-          optionText
+          'p',
+          { className: 'pull-right' },
+          _react2.default.createElement(
+            'i',
+            null,
+            'Created on ',
+            _react2.default.createElement(
+              'span',
+              { title: 'at ' + time },
+              date
+            )
+          )
         )
       )
     )
@@ -15297,8 +15301,8 @@ var CreatePoll = _react2.default.createClass({
     return color;
   },
   getInitialState: function getInitialState() {
-    this.handleChange = (0, _throttle2.default)(this.handleChange, 500);
-    this.handleNameChange = (0, _throttle2.default)(this.handleNameChange, 500);
+    this.handleChange = (0, _throttle2.default)(this.handleChange, 16);
+    this.handleNameChange = (0, _throttle2.default)(this.handleNameChange, 16);
 
     return {
       numOptions: 2,
@@ -15390,7 +15394,7 @@ var CreatePoll = _react2.default.createClass({
       }
       return response.json();
     }).then(function (json) {
-      if (!json.url) {
+      if (!json._id) {
         self.setState({
           alert: {
             type: 'danger',
@@ -15399,8 +15403,7 @@ var CreatePoll = _react2.default.createClass({
         });
         return;
       }
-      var url = json.url;
-      self.context.router.push(url.slice(url.indexOf('/poll/')));
+      self.context.router.push('/poll/' + json._id);
     }).catch(function (err) {
       return console.log(err);
     });
@@ -15834,8 +15837,8 @@ var PollsContainer = _react2.default.createClass({
     this.setState({ fetching: true });
 
     var self = this;
-    fetch('/api/polls/' + filter + '?offset=' + nextPage, {
-      credentials: 'same-origin'
+    fetch('https://mb-polling.herokuapp.com/api/polls/' + filter + '?offset=' + nextPage, {
+      // credentials: 'same-origin'
     }).then(function (response) {
       return response.json();
     }).then(function (json) {

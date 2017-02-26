@@ -14,15 +14,14 @@ const MiniPoll = ({ poll, onClick }) => {
     if (cur.count > prev.count) return cur;
     return prev;
   }).color;
-
-  let optionText = poll.options.map((el) => {
-    return <i>{el.option}</i>;
-  }).join(' | ');
   
+  let created = new Date(poll.created);
+  let date = created.toLocaleDateString();
+  let time = created.toLocaleTimeString();
   return (
     <div className="col-xs-12 col-sm-6">
       <div
-        style={{borderColor: color, borderWidth: '5px', backgroundColor: '#FFF'}}
+        style={{borderColor: color, boarderRadius: '3px', borderWidth: '5px', backgroundColor: '#FFF'}}
         className="panel panel-default mini-poll"
         onClick={() => onClick(poll._id)}
       >
@@ -30,10 +29,12 @@ const MiniPoll = ({ poll, onClick }) => {
           className="panel-heading"
           style={{backgroundColor: getReadableColor(color)}}
         >
-          <h1 className="mini-poll-heading" style={{color: color}}>{poll.name}</h1>
+          <h3 className="mini-poll-heading" style={{color: color}}>{poll.name}</h3>
         </div>
         <div className="panel-body">
-          <h3>{optionText}</h3>
+          <p className="pull-right">
+            <i>Created on <span title={'at ' + time}>{date}</span></i>
+          </p>
         </div>
       </div>
     </div>

@@ -20,8 +20,8 @@ const CreatePoll = React.createClass({
   },
 
   getInitialState() {
-    this.handleChange = throttle(this.handleChange, 500);
-    this.handleNameChange = throttle(this.handleNameChange, 500);
+    this.handleChange = throttle(this.handleChange, 16);
+    this.handleNameChange = throttle(this.handleNameChange, 16);
 
     return {
       numOptions: 2,
@@ -116,7 +116,7 @@ const CreatePoll = React.createClass({
       }
       return response.json();
     }).then(json => {
-      if (!json.url) {
+      if (!json._id) {
         self.setState({
           alert: {
             type: 'danger',
@@ -125,8 +125,7 @@ const CreatePoll = React.createClass({
         });
         return;
       }
-      let url = json.url;
-      self.context.router.push(url.slice(url.indexOf('/poll/')));
+      self.context.router.push(`/poll/${json._id}`);
     }).catch((err) => console.log(err));
   },
 
