@@ -29,6 +29,12 @@ const PollsContainer = React.createClass({
     this.fetch();
   },
 
+  componentDidUpdate(prevProps) {
+    if (this.props.filter !== prevProps.filter) {
+      this.fetch();
+    }
+  },
+
   fetch() {
     let filter = this.props.params.filter;
     let nextPage = this.state.nextPage[filter];

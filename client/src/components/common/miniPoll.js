@@ -31,7 +31,7 @@ const MiniPoll = ({ poll, onClick }) => {
           <h1 className="mini-poll-heading" style={{color: color}}>{poll.name}</h1>
         </div>
         <div className="panel-body">
-          <h3>{optionText}</h3>
+          <h3><i>{optionText}</i></h3>
         </div>
       </div>
     </div>
