@@ -15339,6 +15339,7 @@ var CreatePoll = _react2.default.createClass({
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
     }).then(function (response) {
+      console.log(response);
       if ('object' === (typeof response === 'undefined' ? 'undefined' : _typeof(response))) {
         return response;
       }

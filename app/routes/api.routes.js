@@ -141,7 +141,6 @@ module.exports = (app, passport) => {
         return;
       }
       res.json(poll);
-      // res.redirect(`/poll/${poll._id}`);
     });
   });
 
