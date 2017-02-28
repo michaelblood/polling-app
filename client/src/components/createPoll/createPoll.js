@@ -113,7 +113,7 @@ const CreatePoll = React.createClass({
           });
           return;
         }
-      } else return;
+      }
     }
     let self = this;
     fetch('/api/polls/new', {

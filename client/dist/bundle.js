@@ -15330,7 +15330,7 @@ var CreatePoll = _react2.default.createClass({
           });
           return;
         }
-      } else return;
+      }
     }
     var self = this;
     fetch('/api/polls/new', {
