@@ -1,8 +1,8 @@
-/* TESTS DO NOT WORK, AFTER SOME REFACTORING OCCURRED */
-
+/* eslint-env node, mocha */
 const assert = require('assert');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
+const expect = require('chai').expect;
 
 mongoose.Promise = Promise;
 mongoose.connect('mongodb://localhost:27017/test-db', (err) => {
@@ -28,7 +28,7 @@ const {
   createUser
 } = require('../app/controllers');
 
-describe.skip('Controller tests', function() {
+describe('Controller tests', function() {
   afterEach(function(done) {
     Users.remove({}, () => {
       Polls.remove({}, done);
@@ -186,7 +186,7 @@ describe.skip('Controller tests', function() {
           let id = user._id;
           createPoll(id, 'test-poll', true,['option1', 'option2'], (err, doc) => {
             assert(doc.options.length === 2);
-            addOptionToPoll(doc._id, 'option', (err, updated) => {
+            addOptionToPoll(doc._id, 'option', '#FFF', (err, updated) => {
               if (err) {
                 console.log(err);
                 assert(false);
@@ -203,7 +203,7 @@ describe.skip('Controller tests', function() {
         createUser('Mocha', (err, user) => {
           let id = user._id;
           createPoll(id, 'test-poll', false,['option1', 'option2'], (err, doc) => {
-            addOptionToPoll(doc._id, {option: 'option3'}, (err, updated) => {
+            addOptionToPoll(doc._id, 'option3', '#FFF', (err, updated) => {
               if (err) {
                 console.log(err);
                 assert(false);
@@ -299,16 +299,58 @@ describe.skip('Controller tests', function() {
       });
     });
 
-    describe.skip('removeFavoritePoll', function() {
-      
+    describe('removeFavoritePoll', function() {
+      it('should remove a favorite poll from a user', function(done) {
+        createUser('mochalove', (err, user) => {
+          let id = user._id;
+          createPoll(id, 'test-poll', true, ['option1', 'option2'], (err, doc) => {
+            addFavoritePoll(id, doc._id, (err, doc) => {
+              expect(doc.savedPolls).to.have.lengthOf(1);
+              removeFavoritePoll(id, doc._id, (err, u) => {
+                expect(err).to.not.exist;
+                expect(u).to.exist;
+                expect(u.savedPolls).to.have.lengthOf(0);
+                done();
+              });
+            })
+          }); 
+        })
+      });
     });
 
-    describe.skip('getFavoritePolls', function() {
-
+    describe('getFavoritePolls', function() {
+      it(`should return an array of user's favorite polls`, function(done) {
+        createUser('mochalove', (err, user) => {
+          let id = user._id;
+          createPoll(id, 'test-poll', true, ['option1', 'option2'], (err, doc) => {
+            addFavoritePoll(id, doc._id, (err, doc) => {
+              getFavoritePolls(id, 0, (err, arr, next) => {
+                expect(err).to.not.exist;
+                expect(arr).to.have.lengthOf(1);
+                expect(next).to.equal(-1);
+                done();
+              });
+            })
+          }); 
+        })
+      });
     });
 
-    describe.skip('getCreatedPolls', function() {
-
+    describe('getCreatedPolls', function() {
+      it(`should return an array of user's created polls`, function(done) {
+        createUser('mochalove', (err, user) => {
+          let id = user._id;
+          expect(user.createdPolls).to.have.lengthOf(0);
+          createPoll(id, 'test-poll', true, ['option1', 'option2'], (err, doc) => {
+            getCreatedPolls(id, 0, (err, arr, next) => {
+              expect(err).to.not.exist;
+              expect(arr).to.have.lengthOf(1);
+              expect(next).to.equal(-1);
+              done();
+            });
+          }); 
+        })
+      });
     });
   }); // end 'user controllers' tests
 

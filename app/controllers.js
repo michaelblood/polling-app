@@ -247,7 +247,7 @@ const removeFavoritePoll = (userId, pollId, cb) => {
       cb('user not found');
       return;
     }
-    let polls = user.savedPolls.filter(el => !(el === pollId));
+    let polls = user.savedPolls.filter(el => (el === pollId));
     user.savedPolls = polls;
     user.save((err, doc) => {
       if (err) {

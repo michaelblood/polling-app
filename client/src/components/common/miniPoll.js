@@ -21,7 +21,12 @@ const MiniPoll = ({ poll, onClick }) => {
   return (
     <div className="col-xs-12 col-sm-6">
       <div
-        style={{borderColor: color, boarderRadius: '3px', borderWidth: '5px', backgroundColor: '#FFF'}}
+        style={{
+          borderColor: color,
+          boarderRadius: '3px',
+          borderWidth: '5px',
+          backgroundColor: '#FFF'
+        }}
         className="panel panel-default mini-poll"
         onClick={() => onClick(poll._id)}
       >

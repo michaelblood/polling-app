@@ -24,11 +24,16 @@ const MorePollsButton = React.createClass({
     }
     return (
       <div
-        onClick={this.props.onClick}
         className="col-xs-12 more-polls"
         style={{display: 'flex', justifyContent: 'center'}}
       >
-        <h3>More polls...</h3>
+        <button
+          onClick={this.props.onClick}
+          style={{borderColor: '#31708f'}}
+          className="btn btn-standard btn-lg"
+        >
+          Load more polls...
+        </button>
       </div>
     );
   }

@@ -1,7 +1,6 @@
 // Create Poll page - /polls/new
 
 import React, { PropTypes } from 'react';
-import throttle from 'lodash/throttle';
 
 import AddOption from './addOption';
 import AlertPopup from '../common/alert';
@@ -20,9 +19,6 @@ const CreatePoll = React.createClass({
   },
 
   getInitialState() {
-    this.handleChange = throttle(this.handleChange, 16);
-    this.handleNameChange = throttle(this.handleNameChange, 16);
-
     return {
       numOptions: 2,
       nextIndex: 2,
@@ -91,7 +87,7 @@ const CreatePoll = React.createClass({
       canAddNewOptions: !this.state.canAddNewOptions
     });
   },
-  //may need to come back to this
+
   handleSubmit() {
     let options = this.state;
 
@@ -103,6 +99,21 @@ const CreatePoll = React.createClass({
         }
       });
       return;
+    }
+
+    for (let i = 0; i < options.nextIndex; i++) {
+      let option = options.options[i.toString()];
+      if (option) {
+        if (option.text === '') {
+          this.setState({
+            alert: {
+              type: 'warning',
+              message: `Options can't be empty!`
+            }
+          });
+          return;
+        }
+      } else return;
     }
     let self = this;
     fetch('/api/polls/new', {
