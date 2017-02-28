@@ -10,7 +10,6 @@ const parseOptions = (options) => {
     colors.push(el.color);
     labels.push(el.option);
   });
-  console.log({counts, colors, labels});
   return { counts, colors, labels };
 };
 

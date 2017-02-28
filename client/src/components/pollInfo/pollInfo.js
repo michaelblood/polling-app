@@ -1,8 +1,9 @@
 import React from 'react';
 
-import AlertPopup from '../common/alert';
+import AlertPopup from '../common';
 import PollOptions from './pollOptions';
 import PollChart from './pollChart';
+import Modal from '../common'
 
 const PollInfo = React.createClass({
   
@@ -69,8 +70,20 @@ const PollInfo = React.createClass({
       }).catch(err => console.log(err));
   },
 
-  addNewOption() {
+  handleAddOption() {
+    this.setState({
+      modal: true
+    });
+  },
+  
+  destroyModal() {
+    this.setState({
+      modal: false
+    });
+  },
 
+  addNewOption(text) {
+    
   },
 
   render() {
@@ -85,7 +98,7 @@ const PollInfo = React.createClass({
     if (!poll) return (<h1>error</h1>);
     return (
       <div>
-        {!!this.state.modal && <Modal />}
+        {this.state.modal && <Modal onClick={this.addNewOption} destroy={this.destroyModal} />}
         <div className="jumbotron page-title text-center">
           <div className="container">
             <div className="h1">
@@ -95,7 +108,7 @@ const PollInfo = React.createClass({
         </div>
         <div className="container">
           <div className="row">
-            <div className="col-md-2 col-xs-4">
+            <div className="col-md-2 hidden-xs hidden-sm">
               back button
             </div>
             {this.state.posting
@@ -106,7 +119,7 @@ const PollInfo = React.createClass({
               :
               <PollOptions
                 onClick={this.handleOptionClick}
-                addNew={this.addNewOption}
+                addNew={this.handleAddOption}
                 options={poll.options}
                 canAddNewOptions={poll.canAddNewOptions}
               />

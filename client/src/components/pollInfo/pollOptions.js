@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
+import { getReadableColor } from '../utilities';
 
 const parseOptions = ({options, onClick}) => {
-  let arr = options.map(option => (
+  let arr = options.map((option) => (
     <button
-      className="btn btn-default"
+      className="btn btn-default btn-lg poll-options-btn"
       onClick={() => onClick(option._id)}
       key={option._id}
       style={{
-        
+        margin: '2px',
+        color: option.color,
+        borderColor: option.color,
+        background: getReadableColor(option.color)
       }}
     >
       {option.option}
@@ -20,10 +24,24 @@ const parseOptions = ({options, onClick}) => {
 const PollOptions = ({ options, onClick, canAddNewOptions, addNew }) => {
   let list = parseOptions({options, onClick});
   return (
-    <div className="col-xs-8 col-md-4">
-      <h1>poll options</h1>
-      {list}
-      {canAddNewOptions && <button className="btn btn-success" onClick={addNew}>Don't see a good option? Write your own!</button> }
+    <div className="col-xs-12 col-md-4">
+      <h1 style={{color: "#31708f"}}>What do you think?</h1>
+      <hr />
+      <div className="row">
+        <div className="col-xs-12">
+          {list}
+          {canAddNewOptions &&
+          <div>
+            <hr/>
+            <button
+              className="btn btn-success btn-block"
+              onClick={addNew}
+            >
+              Don't see a good option? Write your own!
+            </button>
+          </div>}
+        </div>
+      </div>
     </div>
   );
 };
