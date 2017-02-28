@@ -21,26 +21,6 @@ module.exports = (app, passport) => {
     next();
   });
 
-  app.post('/test/api/polls/new', (req, res) => {
-    let id = '58b472427a9c6919a43c1a00';
-    let body = req.body;
-    if ('string' == typeof req.body) body = JSON.parse(req.body);
-    let { pollName, options, canAddNewOptions } = body;
-    if (!options || !pollName || (!canAddNewOptions && canAddNewOptions !== false)){
-      res.status(200).json({error: 'missing parameter'});
-      return;
-    }
-    if ('string' == typeof option) options = JSON.parse(options);
-
-    createPoll(id, pollName, canAddNewOptions, options, (err, poll) => {
-      if (err) {
-        res.status(200).json({error: err.toString()});
-        return;
-      }
-      res.status(200).json(poll);
-    });
-  });
-
   app.get('/api/amiloggedin', (req, res) => {
     if (req.user) {
       res.status(200).json(req.user);

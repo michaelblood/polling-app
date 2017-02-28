@@ -18,7 +18,7 @@ const Home = React.createClass({
 
         <div className="container">
           <div className="row">
-            <div className="col-xs-12 col-sm-6 text-center">
+            <div className="col-xs-12 col-sm-6 text-center home-button">
               <Link className="home-link" style={{textDecoration: 'none'}} to="/login">
                 <h1 style={{
                   color: '#31708f'
@@ -26,7 +26,7 @@ const Home = React.createClass({
               </Link>
             </div>
 
-            <div className="col-xs-12 col-sm-6 text-center">
+            <div className="col-xs-12 col-sm-6 text-center home-button">
               <Link className="home-link" style={{textDecoration: 'none'}} to="/polls/all">
                 <h1 style={{
                   color: '#31708f'

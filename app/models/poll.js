@@ -16,7 +16,6 @@ const schema = new mongoose.Schema({
   created: { type: Date, default: Date.now },
   name: String,
   authorId: String,
-  authorName: String,
   options: [{
     option: String,
     color: { type: String, default: defaultColor },

@@ -121,8 +121,8 @@ const CreatePoll = React.createClass({
       body: JSON.stringify(options),
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
-    }).then((response) => response.json()
-    ).then(json => {
+    }).then((response) => response.json())
+      .then(json => {
       if (!json._id) {
         console.log(json);
         self.setState({

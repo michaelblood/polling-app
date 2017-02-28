@@ -29,7 +29,7 @@ const MorePollsButton = React.createClass({
       >
         <button
           onClick={this.props.onClick}
-          style={{borderColor: '#31708f'}}
+          style={{borderColor: '#31708f', background: '#f5f5f5'}}
           className="btn btn-standard btn-lg"
         >
           Load more polls...

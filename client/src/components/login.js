@@ -6,11 +6,27 @@ const Login = React.createClass({
     return (
 
       <div className="login-page">
-        <div className="login-left login text-center">
-          <h1><a href="/auth/twitter"><span className="hidden-xs hidden-sm">[ </span>Sign in with Twitter<span className="hidden-xs hidden-sm"> ]</span></a></h1>
+        <div className="login login-left">
+          <a
+            role="button"
+            href="/auth/twitter"
+            onClick={this.props.onClick}
+            style={{background: '#31708f'}}
+            className="btn btn-standard btn-lg twitter-link"
+          >
+            <span className="twitter-link">Sign in with Twitter</span>
+          </a>
         </div>
-        <div className="login-right login text-center">
-          <h1><a href="/auth/github"><span className="hidden-xs hidden-sm">[ </span>Sign in with GitHub<span className="hidden-xs hidden-sm"> ]</span></a></h1>
+        <div className="login login-right">
+          <a
+            role="button"
+            href="/auth/github"
+            onClick={this.props.onClick}
+            style={{background: '#f5f5f5'}}
+            className="btn btn-standard btn-lg github-link"
+          >
+            <span className="github-link">Sign in with GitHub</span>
+          </a>
         </div>
       </div>
     );
