@@ -1,9 +1,3 @@
-import AlertPopup from './alert';
-import MiniPoll from './miniPoll';
-import Modal from './modal';
-
-export default {
-  AlertPopup,
-  MiniPoll,
-  Modal
-}
+export { default as AlertPopup } from './alert';
+export { default as MiniPoll} from './miniPoll';
+export { default as Modal } from './modal';

@@ -113,7 +113,9 @@ const App = React.createClass({
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        {this.props.children}
+        {this.props.children && React.cloneElement(this.props.children, {
+          user: this.state.user
+        })}
       </div>
     );
   }

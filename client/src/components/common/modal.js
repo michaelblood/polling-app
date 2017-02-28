@@ -1,9 +1,12 @@
 import React, { PropTypes } from 'react';
 
+import { AlertPopup } from '../common'
+
 const Modal = React.createClass({
   getInitialState() {
     return {
       optionText: '',
+      alert: null,
     }
   },
 
@@ -12,22 +15,62 @@ const Modal = React.createClass({
       optionText: e.target.value
     });
   },
-  //
-  // figure out why modal doesn't display
-  //
+
+  handleClick() {
+    const text = this.state.optionText;
+    if (text === '') {
+      this.setState({
+        alert: {
+          type: 'warning',
+          message: `Option can't be empty!`
+        }
+      });
+      return;
+    }
+    this.props.onClick(text);
+  },
+
+  dismissAlert() {
+    this.setState({
+      alert: null,
+    });
+  },
+  
   render() {
     return (
-      <div className="modal">
-        <div className="modal-content">
-          <input
-            type="text"
-            value={this.state.optionText}
-            onChange={(e) => this.handleChange(e)}
-            className="form-control input-lg"
-            placeholder="new option text"
-          />
-          <button className="btn btn-primary" onClick={() => this.props.onClick(this.state.optionText)}>Submit</button>
-          <button className="btn btn-danger" onClick={() => this.props.destroy()}>Cancel</button>
+      <div className="custom-modal">
+        <div className="panel">
+          <div className="panel-heading" style={{marginBottom: '0px', paddingBottom: '0px'}}>
+            <h3 className="modal-heading">Add your option and press Submit.</h3>
+            <hr />
+          </div>
+          <div className="panel-body">
+            {!!this.state.alert && <AlertPopup message={this.state.alert.message} onClick={this.dismissAlert} type={this.state.alert.type} />}
+            <form>
+              <div className="input-group">
+                <label htmlFor="modal-input">Option:</label>
+                <input
+                  id="modal-input"
+                  type="text"
+                  value={this.state.optionText}
+                  onChange={(e) => this.handleChange(e)}
+                  className="form-control input-lg"
+                  placeholder="new option text"
+                />
+              </div>
+              <hr />
+              <div
+                className="modal-btn-wrapper"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                }}
+              >
+                <button type="button" className="btn btn-primary" onClick={this.handleClick}>Submit</button>
+                <button type="button" className="btn btn-danger" onClick={this.props.destroy}>Cancel</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     );
@@ -35,7 +78,8 @@ const Modal = React.createClass({
 });
 
 Modal.propTypes = {
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  destroy: PropTypes.func,
 };
 
 export default Modal;

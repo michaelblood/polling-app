@@ -3,7 +3,7 @@
 import React, { PropTypes } from 'react';
 
 import AddOption from './addOption';
-import AlertPopup from '../common/alert';
+import { AlertPopup } from '../common';
 
 const CreatePoll = React.createClass({
   contextTypes: {
@@ -124,11 +124,10 @@ const CreatePoll = React.createClass({
     }).then((response) => response.json())
       .then(json => {
       if (!json._id) {
-        console.log(json);
         self.setState({
           alert: {
             type: 'danger',
-            message: 'Something went wrong. Try again later.'
+            message: 'You probably already voted. Or you broke something.'
           }
         });
         return;

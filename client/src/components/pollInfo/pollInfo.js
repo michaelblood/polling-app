@@ -1,9 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router';
 
-import AlertPopup from '../common';
 import PollOptions from './pollOptions';
 import PollChart from './pollChart';
-import Modal from '../common'
+import { Modal, AlertPopup } from '../common'
 
 const PollInfo = React.createClass({
   
@@ -82,8 +82,39 @@ const PollInfo = React.createClass({
     });
   },
 
+  dismissALert() {
+    this.setState({
+      alert: false,
+    });
+  },
+
   addNewOption(text) {
-    
+    const self = this;
+    fetch(`/api/poll/${self.state.poll._id}/new`, {
+      method: 'POST',
+      body: JSON.stringify({ option: text }),
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin'
+    }).then(response => response.json())
+      .then(json => {
+        if (!json._id) {
+          self.setState({
+            alert: {
+              type: 'danger',
+              message: 'Something went wrong. Try again later.'
+            }
+          });
+          return;
+        }
+        self.setState({
+          poll: json,
+          modal: false
+        });
+      }).catch(err => console.log(err));
+  },
+
+  dismissAlert() {
+    this.setState({alert: null});
   },
 
   render() {
@@ -107,9 +138,12 @@ const PollInfo = React.createClass({
           </div>
         </div>
         <div className="container">
+          {!!this.state.alert && <AlertPopup message={this.state.alert.message} type={this.state.alert.type} onClick={this.dismissAlert} />}
           <div className="row">
             <div className="col-md-2 hidden-xs hidden-sm">
-              back button
+              <Link role="button" className="btn btn-default btn-lg" to="/polls/all">
+                Back to polls
+              </Link>
             </div>
             {this.state.posting
               ? 

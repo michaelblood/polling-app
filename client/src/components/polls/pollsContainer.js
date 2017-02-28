@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 
-import MiniPoll from '../common/miniPoll';
+import { MiniPoll, AlertPopup } from '../common';
 import MorePollsButton from './morePollsButton';
-import AlertPopup from '../common/alert';
 
 const PollsContainer = React.createClass({
   contextTypes: {
@@ -33,6 +32,39 @@ const PollsContainer = React.createClass({
     if (this.props.params.filter !== prevProps.params.filter) {
       this.fetch();
     }
+  },
+
+  deletePoll(e, id) {
+    e.preventDefault();
+    e.stopPropagation();
+    const self = this;
+    fetch(`/api/poll/${id}/delete`, {
+      method: 'POST',
+      credentials: 'same-origin'
+    }).then(response => response.json())
+      .then(json => {
+        if (json.error) {
+          self.setState({
+            alert: {
+              type: 'danger',
+              message: json.error,
+            }
+          });
+          return;
+        }
+        self.setState({
+          polls: {
+            all: [],
+            favorites: [],
+            created: []
+          },
+          alert: {
+            type: 'success',
+            message: 'Poll successfully deleted'
+          }
+        });
+        self.fetch();
+      }).catch(err => console.log(err));
   },
 
   fetch() {
@@ -105,8 +137,12 @@ const PollsContainer = React.createClass({
     for (let i = 0; i < polls.length; i++) {
       let poll = polls[i];
       if (poll){
+        let destroy = false;
+        if (this.state.user && poll.authorId === this.state.user._id) {
+          destroy = (e) => this.deletePoll(e, poll._id)
+        }
         renderedPolls.push(
-          <MiniPoll key={poll._id} poll={poll} onClick={this.handlePollClick} />
+          <MiniPoll key={poll._id} destroy={destroy} poll={poll} onClick={this.handlePollClick} />
         );
       }
     }

@@ -30,7 +30,7 @@ const PollOptions = ({ options, onClick, canAddNewOptions, addNew }) => {
       <div className="row">
         <div className="col-xs-12">
           {list}
-          {canAddNewOptions &&
+          {canAddNewOptions ?
           <div>
             <hr/>
             <button
@@ -38,6 +38,13 @@ const PollOptions = ({ options, onClick, canAddNewOptions, addNew }) => {
               onClick={addNew}
             >
               Don't see a good option? Write your own!
+            </button>
+          </div>
+          :
+          <div>
+            <hr/>
+            <button className="btn disabled btn-default">
+              The poll creator said you can't add your own option.
             </button>
           </div>}
         </div>

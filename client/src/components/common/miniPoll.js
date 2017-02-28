@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import { getReadableColor } from '../utilities';
 
-const MiniPoll = ({ poll, onClick }) => {
+const MiniPoll = ({ poll, onClick, destroy }) => {
 
   let color = poll.options.reduce((prev, cur) => {
     if (cur.count > prev.count) return cur;
@@ -31,6 +31,10 @@ const MiniPoll = ({ poll, onClick }) => {
           <h3 className="mini-poll-heading" style={{color: color}}>{poll.name}</h3>
         </div>
         <div className="panel-body">
+          {!!destroy &&
+            <button onClick={destroy} className="btn btn-danger pull-left">
+              Delete
+            </button>}
           <p className="pull-right">
             <i>Created on <span title={'at ' + time}>{date}</span></i>
           </p>
@@ -42,7 +46,8 @@ const MiniPoll = ({ poll, onClick }) => {
 
 MiniPoll.propTypes = {
   poll: PropTypes.object,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  destroy: PropTypes.any
 };
 
 export default MiniPoll;

@@ -82,8 +82,6 @@ const deletePoll = (requesterId, pollId, cb) => {
   });
 };
 
-// this could be done a better way, but i got it working once and don't feel like refactoring
-// spaghetti!
 const incrementOption = (pollId, optionId, userIdOrIp, cb) => {
   Polls.findById(pollId, (err, poll) => {
     if (err) {
@@ -247,7 +245,7 @@ const removeFavoritePoll = (userId, pollId, cb) => {
       cb('user not found');
       return;
     }
-    let polls = user.savedPolls.filter(el => (el === pollId));
+    let polls = user.savedPolls.filter(el => (el !== pollId));
     user.savedPolls = polls;
     user.save((err, doc) => {
       if (err) {

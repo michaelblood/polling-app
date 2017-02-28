@@ -124,7 +124,11 @@ module.exports = (app, passport) => {
     });
   });
 
-  app.post('/api/poll/:pollId/delete', apiIsLoggedIn, (req, res) => {
+  app.post('/api/poll/:pollId/delete', (req, res) => {
+    if (!req.user) {
+      res.json({error: 'not authenticated. how did you even get here?'})
+      return;
+    }
     let pollId = req.params.pollId;
     let userId = req.user._id;
     deletePoll(userId, pollId, (err, msg) => {
@@ -146,6 +150,25 @@ module.exports = (app, passport) => {
     removeOptionFromPoll(pollId, optionId, (err, poll) => {
       if (err) {
         res.status(200).json({error: err});
+        return;
+      }
+      res.status(200).json(poll);
+    });
+  });
+
+  app.post('/api/poll/:pollId/new', (req, res) => {
+    let pollId = req.params.pollId;
+    let body = req.body;
+    if ('string' === typeof body) body = JSON.parse(body);
+    let newOption = body.option || null;
+    if (newOption === null) {
+      res.status(200).json({error: 'no new option specified'});
+      return;
+    }
+    let optionColor = body.optionColor || null;
+    addOptionToPoll(pollId, newOption, optionColor, (err, poll) => {
+      if (err) {
+        res.status(200).json({error: err.toString()});
         return;
       }
       res.status(200).json(poll);
@@ -178,24 +201,6 @@ module.exports = (app, passport) => {
     });
   });
   
-  app.post('/api/poll/:pollId/new', (req, res) => {
-    let pollId = req.params.pollId;
-    let body = req.body;
-    if ('string' === typeof body) body = JSON.parse(body);
-    let newOption = body.option || null;
-    if (newOption === null) {
-      res.status(200).json({error: 'no new option specified'});
-      return;
-    }
-    let optionColor = body.optionColor || null;
-    addOptionToPoll(pollId, newOption, optionColor, (err, poll) => {
-      if (err) {
-        res.status(200).json({error: err.toString()});
-        return;
-      }
-      res.status(200).json(poll);
-    });
-  });
 
   app.post('/api/poll/:pollId/toggleFavorite', apiIsLoggedIn, (req, res) => {
     let pollId = req.params.pollId;
