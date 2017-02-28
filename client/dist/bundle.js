@@ -15210,8 +15210,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; // Create Poll page - /polls/new
-
 var _react = __webpack_require__(1);
 
 var _react2 = _interopRequireDefault(_react);
@@ -15339,10 +15337,6 @@ var CreatePoll = _react2.default.createClass({
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin'
     }).then(function (response) {
-      console.log(response);
-      if ('object' === (typeof response === 'undefined' ? 'undefined' : _typeof(response))) {
-        return response;
-      }
       return response.json();
     }).then(function (json) {
       if (!json._id) {
@@ -15468,7 +15462,7 @@ var CreatePoll = _react2.default.createClass({
       )
     );
   }
-});
+}); // Create Poll page - /polls/new
 
 exports.default = CreatePoll;
 
