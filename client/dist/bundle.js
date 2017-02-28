@@ -15345,6 +15345,7 @@ var CreatePoll = _react2.default.createClass({
       return response.json();
     }).then(function (json) {
       if (!json._id) {
+        console.log(json);
         self.setState({
           alert: {
             type: 'danger',

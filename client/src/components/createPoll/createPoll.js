@@ -128,6 +128,7 @@ const CreatePoll = React.createClass({
       return response.json();
     }).then(json => {
       if (!json._id) {
+        console.log(json);
         self.setState({
           alert: {
             type: 'danger',
