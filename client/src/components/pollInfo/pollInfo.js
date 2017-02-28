@@ -45,7 +45,7 @@ const PollInfo = React.createClass({
   },
 
   handleOptionClick(id) {
-    // this.setState({ posting: true });
+    this.setState({ posting: true });
     let self = this;
     fetch(`/api/poll/${this.state.poll._id}/${id}`, {
       method: 'POST',

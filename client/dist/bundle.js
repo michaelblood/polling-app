@@ -30471,7 +30471,7 @@ var PollInfo = _react2.default.createClass({
     // setState(poll: poll)
   },
   handleOptionClick: function handleOptionClick(id) {
-    // this.setState({ posting: true });
+    this.setState({ posting: true });
     var self = this;
     fetch('/api/poll/' + this.state.poll._id + '/' + id, {
       method: 'POST',
@@ -30582,10 +30582,15 @@ var parseOptions = function parseOptions(_ref) {
 
   var arr = options.map(function (option) {
     return _react2.default.createElement(
-      "option",
-      { onClick: function onClick() {
+      "button",
+      {
+        className: "btn btn-default",
+        onClick: function onClick() {
           return _onClick(option._id);
-        }, key: option._id },
+        },
+        key: option._id,
+        style: {}
+      },
       option.option
     );
   });
@@ -30607,20 +30612,11 @@ var PollOptions = function PollOptions(_ref2) {
       null,
       "poll options"
     ),
-    _react2.default.createElement(
-      "select",
-      { name: "options", id: "", className: "form-control" },
-      _react2.default.createElement(
-        "option",
-        null,
-        "Please select an option"
-      ),
-      list,
-      canAddNewOptions && _react2.default.createElement(
-        "option",
-        { onClick: addNew },
-        "Don't see a good option? Write your own!"
-      )
+    list,
+    canAddNewOptions && _react2.default.createElement(
+      "button",
+      { className: "btn btn-success", onClick: addNew },
+      "Don't see a good option? Write your own!"
     )
   );
 };
