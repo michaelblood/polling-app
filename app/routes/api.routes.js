@@ -140,7 +140,7 @@ module.exports = (app, passport) => {
         res.status(500).json({error: err.toString()});
         return;
       }
-      res.status(200).json(poll);
+      res.json(poll);
       // res.redirect(`/poll/${poll._id}`);
     });
   });
