@@ -30790,7 +30790,7 @@ var PollInfo = _react2.default.createClass({
     if (this.state.favoriting) return;
     this.setState({ favoriting: true });
     var self = this;
-    fetch('/api/poll/' + this.props.poll._id + '/toggleFavorite', {
+    fetch('/api/poll/' + this.state.poll._id + '/toggleFavorite', {
       method: 'POST',
       credentials: 'same-origin'
     }).then(function (response) {

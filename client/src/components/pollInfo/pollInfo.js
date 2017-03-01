@@ -129,7 +129,7 @@ const PollInfo = React.createClass({
     if (this.state.favoriting) return;
     this.setState({ favoriting: true });
     const self = this;
-    fetch(`/api/poll/${this.props.poll._id}/toggleFavorite`, {
+    fetch(`/api/poll/${this.state.poll._id}/toggleFavorite`, {
       method: 'POST',
       credentials: 'same-origin'
     }).then(response => response.json())
