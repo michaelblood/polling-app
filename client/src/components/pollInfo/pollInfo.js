@@ -18,6 +18,7 @@ const PollInfo = React.createClass({
       modal: null,
       posting: false,
       user: null,
+      favoriting: false,
     };
   },
 
@@ -66,7 +67,6 @@ const PollInfo = React.createClass({
     fetch('/api/polls/random')
       .then(response => response.json())
       .then(json => {
-        console.log(json);
         if (json.error) {
           self.setState({
             alert: {
@@ -130,6 +130,8 @@ const PollInfo = React.createClass({
   },
 
   toggleSaved() {
+    if (this.state.favoriting) return;
+    this.setState({ favoriting: true });
     const self = this;
     fetch(`/api/poll/${this.state.poll._id}/toggleFavorite`, {
       method: 'POST',
@@ -141,11 +143,15 @@ const PollInfo = React.createClass({
             alert: {
               message: 'Something went wrong. Try again later.',
               type: 'danger'
-            }
+            },
+            favoriting: false
           });
           return;
         }
-        self.setState({ user: json });
+        self.setState({
+          user: json,
+          favoriting: false,
+        });
       }).catch(err => console.log(err));
   },
 
@@ -217,11 +223,11 @@ const PollInfo = React.createClass({
               { !!this.state.user && (this.isSaved()
                 ? 
                 <button className="btn btn-danger btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleFavorite}>
-                  <span className="glyphicon glyphicon-remove"></span> Unsave poll
+                  {this.state.favoriting ? 'Loading...' : <span><span className="glyphicon glyphicon-remove"></span> Unsave poll</span> }
                 </button>
                 :
-                <button className="btn btn-success btn-block" style={{whiteSpace: 'normal'}}>
-                  <span className="glyphicon glyphicon-ok"></span> Save poll
+                <button className="btn btn-success btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleFavorite}>
+                  {this.state.favoriting ? 'Loading...' : <span><span className="glyphicon glyphicon-ok"></span> Save poll</span> }
                 </button>)}
             </div>
             { this.state.posting

@@ -30669,7 +30669,8 @@ var PollInfo = _react2.default.createClass({
       alert: null,
       modal: null,
       posting: false,
-      user: null
+      user: null,
+      favoriting: false
     };
   },
   componentDidMount: function componentDidMount() {
@@ -30717,7 +30718,6 @@ var PollInfo = _react2.default.createClass({
     fetch('/api/polls/random').then(function (response) {
       return response.json();
     }).then(function (json) {
-      console.log(json);
       if (json.error) {
         self.setState({
           alert: {
@@ -30781,6 +30781,8 @@ var PollInfo = _react2.default.createClass({
     });
   },
   toggleSaved: function toggleSaved() {
+    if (this.state.favoriting) return;
+    this.setState({ favoriting: true });
     var self = this;
     fetch('/api/poll/' + this.state.poll._id + '/toggleFavorite', {
       method: 'POST',
@@ -30793,11 +30795,15 @@ var PollInfo = _react2.default.createClass({
           alert: {
             message: 'Something went wrong. Try again later.',
             type: 'danger'
-          }
+          },
+          favoriting: false
         });
         return;
       }
-      self.setState({ user: json });
+      self.setState({
+        user: json,
+        favoriting: false
+      });
     }).catch(function (err) {
       return console.log(err);
     });
@@ -30894,13 +30900,21 @@ var PollInfo = _react2.default.createClass({
             !!this.state.user && (this.isSaved() ? _react2.default.createElement(
               'button',
               { className: 'btn btn-danger btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleFavorite },
-              _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove' }),
-              ' Unsave poll'
+              this.state.favoriting ? 'Loading...' : _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove' }),
+                ' Unsave poll'
+              )
             ) : _react2.default.createElement(
               'button',
-              { className: 'btn btn-success btn-block', style: { whiteSpace: 'normal' } },
-              _react2.default.createElement('span', { className: 'glyphicon glyphicon-ok' }),
-              ' Save poll'
+              { className: 'btn btn-success btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleFavorite },
+              this.state.favoriting ? 'Loading...' : _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('span', { className: 'glyphicon glyphicon-ok' }),
+                ' Save poll'
+              )
             ))
           ),
           this.state.posting ? _react2.default.createElement(
