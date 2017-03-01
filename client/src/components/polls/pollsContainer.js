@@ -63,25 +63,26 @@ const PollsContainer = React.createClass({
             message: 'Poll successfully deleted'
           }
         });
-        self.fetch(true);
+        self.resetThenFetch();
       }).catch(err => console.log(err));
   },
 
-  fetch(reset) {
-    // if (reset) {
-    //   this.setState({
-    //     polls: {
-    //       all: [],
-    //       favorites: [],
-    //       created: []
-    //     },
-    //     nextPage: {
-    //       all: 0,
-    //       favorites: 0,
-    //       created: 0
-    //     }
-    //   });
-    // }
+  resetThenFetch() {
+    this.setState({
+      polls: {
+        all: [],
+        favorites: [],
+        created: []
+      },
+      nextPage: {
+        all: 0,
+        favorites: 0,
+        created: 0
+      }
+    }, () => fetch());
+  },
+
+  fetch() {
     let filter = this.props.params.filter;
 
     let nextPage = this.state.nextPage[filter] || 0;
