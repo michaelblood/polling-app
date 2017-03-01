@@ -222,11 +222,11 @@ const PollInfo = React.createClass({
               </Link>
               { !!this.state.user && (this.isSaved()
                 ? 
-                <button className="btn btn-danger btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleFavorite}>
+                <button className="btn btn-danger btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleSaved}>
                   {this.state.favoriting ? 'Loading...' : <span><span className="glyphicon glyphicon-remove"></span> Unsave poll</span> }
                 </button>
                 :
-                <button className="btn btn-success btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleFavorite}>
+                <button className="btn btn-success btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleSaved}>
                   {this.state.favoriting ? 'Loading...' : <span><span className="glyphicon glyphicon-ok"></span> Save poll</span> }
                 </button>)}
             </div>

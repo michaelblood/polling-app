@@ -30899,7 +30899,7 @@ var PollInfo = _react2.default.createClass({
             ),
             !!this.state.user && (this.isSaved() ? _react2.default.createElement(
               'button',
-              { className: 'btn btn-danger btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleFavorite },
+              { className: 'btn btn-danger btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleSaved },
               this.state.favoriting ? 'Loading...' : _react2.default.createElement(
                 'span',
                 null,
@@ -30908,7 +30908,7 @@ var PollInfo = _react2.default.createClass({
               )
             ) : _react2.default.createElement(
               'button',
-              { className: 'btn btn-success btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleFavorite },
+              { className: 'btn btn-success btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleSaved },
               this.state.favoriting ? 'Loading...' : _react2.default.createElement(
                 'span',
                 null,
