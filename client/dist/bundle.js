@@ -29575,7 +29575,9 @@ var App = _react2.default.createClass({
       return;
     }
     var self = this;
-    fetch('/api/user/update').then(function (response) {
+    fetch('/api/user/update', {
+      credentials: 'same-origin'
+    }).then(function (response) {
       return response.json();
     }).then(function (json) {
       if (json.error) {

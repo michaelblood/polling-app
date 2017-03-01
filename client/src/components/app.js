@@ -72,7 +72,9 @@ const App = React.createClass({
       return;
     }
     const self = this;
-    fetch('/api/user/update')
+    fetch('/api/user/update', {
+      credentials: 'same-origin'
+    })
       .then(response => response.json())
       .then(json => {
         if (json.error) {
