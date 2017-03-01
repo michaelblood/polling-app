@@ -16,11 +16,15 @@ const PollInfo = React.createClass({
       fetching: false,
       alert: null,
       modal: null,
-      posting: false
+      posting: false,
+      user: null,
     };
   },
 
   componentDidMount() {
+    this.setState({
+      user: this.props.user
+    });
     const self = this;
     if (this.props.params.id) {
       self.setState({ fetching: true });
