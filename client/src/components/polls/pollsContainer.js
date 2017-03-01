@@ -68,20 +68,20 @@ const PollsContainer = React.createClass({
   },
 
   fetch(reset) {
-    if (reset) {
-      this.setState({
-        polls: {
-          all: [],
-          favorites: [],
-          created: []
-        },
-        nextPage: {
-          all: 0,
-          favorites: 0,
-          created: 0
-        }
-      });
-    }
+    // if (reset) {
+    //   this.setState({
+    //     polls: {
+    //       all: [],
+    //       favorites: [],
+    //       created: []
+    //     },
+    //     nextPage: {
+    //       all: 0,
+    //       favorites: 0,
+    //       created: 0
+    //     }
+    //   });
+    // }
     let filter = this.props.params.filter;
 
     let nextPage = this.state.nextPage[filter] || 0;

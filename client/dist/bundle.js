@@ -31266,20 +31266,20 @@ var PollsContainer = _react2.default.createClass({
 
     return fetch;
   }(function (reset) {
-    if (reset) {
-      this.setState({
-        polls: {
-          all: [],
-          favorites: [],
-          created: []
-        },
-        nextPage: {
-          all: 0,
-          favorites: 0,
-          created: 0
-        }
-      });
-    }
+    // if (reset) {
+    //   this.setState({
+    //     polls: {
+    //       all: [],
+    //       favorites: [],
+    //       created: []
+    //     },
+    //     nextPage: {
+    //       all: 0,
+    //       favorites: 0,
+    //       created: 0
+    //     }
+    //   });
+    // }
     var filter = this.props.params.filter;
 
     var nextPage = this.state.nextPage[filter] || 0;
