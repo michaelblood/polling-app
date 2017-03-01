@@ -63,8 +63,11 @@ const App = React.createClass({
       .catch(err => console.log(err));
   },
 
-  updateUser(user) {
-    if (!user._id) {
+  updateUser() {
+    if (!this.state.user) {
+      return;
+    }
+    if (!this.state.user._id) {
       console.log('not sure how this happened, but invalid user');
       return;
     }

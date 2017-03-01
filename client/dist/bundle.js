@@ -29566,8 +29566,11 @@ var App = _react2.default.createClass({
       return console.log(err);
     });
   },
-  updateUser: function updateUser(user) {
-    if (!user._id) {
+  updateUser: function updateUser() {
+    if (!this.state.user) {
+      return;
+    }
+    if (!this.state.user._id) {
       console.log('not sure how this happened, but invalid user');
       return;
     }
