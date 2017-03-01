@@ -5,6 +5,7 @@ const Polls = require('./models/poll');
 // callback signature (error, [list of polls]) => {}
 const getPolls = (offset = 0, cb) => {
   Polls.find({}, {__v: false, voters: false})
+    .sort('-created')
     .skip(offset)
     .limit(6)
     .exec((err, docs) => {

@@ -31234,13 +31234,13 @@ var PollsContainer = _react2.default.createClass({
           message: 'Poll successfully deleted'
         }
       });
-      self.fetch();
+      self.fetch(true);
     }).catch(function (err) {
       return console.log(err);
     });
   },
   fetch: function (_fetch) {
-    function fetch() {
+    function fetch(_x) {
       return _fetch.apply(this, arguments);
     }
 
@@ -31249,7 +31249,21 @@ var PollsContainer = _react2.default.createClass({
     };
 
     return fetch;
-  }(function () {
+  }(function (reset) {
+    if (reset) {
+      this.setState({
+        polls: {
+          all: [],
+          favorites: [],
+          created: []
+        },
+        nextPage: {
+          all: 0,
+          favorites: 0,
+          created: 0
+        }
+      });
+    }
     var filter = this.props.params.filter;
 
     var nextPage = this.state.nextPage[filter] || 0;
