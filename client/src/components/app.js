@@ -68,9 +68,18 @@ const App = React.createClass({
       console.log('not sure how this happened, but invalid user');
       return;
     }
-    this.setState({
-      user: user
-    });
+    const self = this;
+    fetch('/api/user/update')
+      .then(response => response.json())
+      .then(json => {
+        if (json.error) {
+          console.log(json);
+          return;
+        }
+        self.setState({
+          user: json
+        });
+      }).catch(err => console.log(err));
   },
   
   render() {

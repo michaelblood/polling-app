@@ -10,7 +10,8 @@ const {
   getFavoritePolls,
   getCreatedPolls,
   getRandomPoll,
-  getPollById
+  getPollById,
+  getUser
 } = require('../controllers');  
 const { apiIsLoggedIn } = require('./auth');
 
@@ -28,6 +29,19 @@ module.exports = (app, passport) => {
     }
     res.status(200).json({error: 'Not logged in'});
   });
+
+  app.get('/api/user/update', (req, res) => {
+    if (req.user) {
+      getUser(req.user._id, (err, user) => {
+        if (err) {
+          res.json({error: err.toString()});
+          return;
+        }
+        res.json(user);
+      })
+    }
+    res.json({error: 'Not logged in'});
+  })
 
   app.get('/api/polls/favorites', apiIsLoggedIn, (req, res) => {
     if (!req.user) {

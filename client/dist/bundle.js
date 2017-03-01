@@ -29571,8 +29571,19 @@ var App = _react2.default.createClass({
       console.log('not sure how this happened, but invalid user');
       return;
     }
-    this.setState({
-      user: user
+    var self = this;
+    fetch('/api/user/update').then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      if (json.error) {
+        console.log(json);
+        return;
+      }
+      self.setState({
+        user: json
+      });
+    }).catch(function (err) {
+      return console.log(err);
     });
   },
   render: function render() {
@@ -30806,7 +30817,7 @@ var PollInfo = _react2.default.createClass({
         });
         return;
       }
-      self.props.updateUser(json);
+      self.props.updateUser();
       self.setState({
         favoriting: false
       });

@@ -319,6 +319,15 @@ const getCreatedPolls = (userId, offset = 0, cb) => {
   });
 };
 
+const getUser = (id, cb) => {
+  Users.findById(id, (err, user) => {
+    if (err) {
+      cb(err);
+      return;
+    }
+    cb(null, user);
+  });
+}
 // used only for testing other things that require a user. actual user creation is
 // done in the passport configuration
 // callback signature (error, newlyCreatedUser) => {}
@@ -353,5 +362,6 @@ module.exports = {
   getFavoritePolls,
   getCreatedPolls,
   getPollById,
-  getRandomPoll
+  getRandomPoll,
+  getUser
 };

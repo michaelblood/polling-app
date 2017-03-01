@@ -144,7 +144,7 @@ const PollInfo = React.createClass({
           });
           return;
         }
-        self.props.updateUser(json);
+        self.props.updateUser();
         self.setState({
           favoriting: false,
         });
