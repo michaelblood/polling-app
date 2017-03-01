@@ -31322,7 +31322,7 @@ var PollsContainer = _react2.default.createClass({
       var poll = polls[i];
       if (poll) {
         var destroy = false;
-        if (_this.state.user && poll.authorId === _this.state.user._id) {
+        if (_this.props.user && poll.authorId === _this.props.user._id) {
           destroy = function destroy(e) {
             return _this.deletePoll(e, poll._id);
           };

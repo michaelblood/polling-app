@@ -138,7 +138,7 @@ const PollsContainer = React.createClass({
       let poll = polls[i];
       if (poll){
         let destroy = false;
-        if (this.state.user && poll.authorId === this.state.user._id) {
+        if (this.props.user && poll.authorId === this.props.user._id) {
           destroy = (e) => this.deletePoll(e, poll._id)
         }
         renderedPolls.push(
