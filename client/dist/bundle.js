@@ -30433,7 +30433,7 @@ var Home = _react2.default.createClass({
           _react2.default.createElement(
             'div',
             { className: 'col-xs-12 col-sm-6 text-center home-button' },
-            _react2.default.createElement(
+            !this.props.user ? _react2.default.createElement(
               _reactRouter.Link,
               { className: 'home-link', style: { textDecoration: 'none' }, to: '/login' },
               _react2.default.createElement(
@@ -30445,6 +30445,20 @@ var Home = _react2.default.createClass({
                   'strong',
                   null,
                   '[ Sign in ]'
+                )
+              )
+            ) : _react2.default.createElement(
+              _reactRouter.Link,
+              { className: 'home-link', style: { textDecoration: 'none' }, to: '/polls/new' },
+              _react2.default.createElement(
+                'h1',
+                { style: {
+                    color: '#31708f'
+                  } },
+                _react2.default.createElement(
+                  'strong',
+                  null,
+                  '[ Create poll ]'
                 )
               )
             )

@@ -19,11 +19,19 @@ const Home = React.createClass({
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-sm-6 text-center home-button">
-              <Link className="home-link" style={{textDecoration: 'none'}} to="/login">
-                <h1 style={{
-                  color: '#31708f'
-                }}><strong>[ Sign in ]</strong></h1>
-              </Link>
+              {!this.props.user ? 
+                <Link className="home-link" style={{textDecoration: 'none'}} to="/login">
+                  <h1 style={{
+                    color: '#31708f'
+                  }}><strong>[ Sign in ]</strong></h1>
+                </Link>
+                :
+                <Link className="home-link" style={{textDecoration: 'none'}} to="/polls/new">
+                  <h1 style={{
+                    color: '#31708f'
+                  }}><strong>[ Create poll ]</strong></h1>
+                </Link>
+              }
             </div>
 
             <div className="col-xs-12 col-sm-6 text-center home-button">
