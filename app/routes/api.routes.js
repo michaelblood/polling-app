@@ -39,6 +39,7 @@ module.exports = (app, passport) => {
         }
         res.json(user);
       })
+      return;
     }
     res.json({error: 'Not logged in'});
   })
