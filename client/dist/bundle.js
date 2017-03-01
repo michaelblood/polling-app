@@ -29817,7 +29817,7 @@ var MiniPoll = function MiniPoll(_ref) {
         { className: 'panel-body' },
         !!destroy && _react2.default.createElement(
           'button',
-          { onClick: destroy, className: 'btn btn-danger pull-left' },
+          { style: { marginTop: '0px' }, onClick: destroy, className: 'btn btn-danger pull-left' },
           'Delete'
         ),
         _react2.default.createElement(
@@ -31240,11 +31240,6 @@ var PollsContainer = _react2.default.createClass({
         return;
       }
       self.setState({
-        polls: {
-          all: [],
-          favorites: [],
-          created: []
-        },
         alert: {
           type: 'success',
           message: 'Poll successfully deleted'

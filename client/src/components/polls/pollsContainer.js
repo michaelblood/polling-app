@@ -53,11 +53,6 @@ const PollsContainer = React.createClass({
           return;
         }
         self.setState({
-          polls: {
-            all: [],
-            favorites: [],
-            created: []
-          },
           alert: {
             type: 'success',
             message: 'Poll successfully deleted'
