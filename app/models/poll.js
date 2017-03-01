@@ -4,8 +4,9 @@ const shortid = require('shortid');
 
 const defaultColor = () => {
   let n = Math.floor(Math.random() * 256);
-  let grey = '' + n + ',' + n + ',' + n;
-  return `rgb(${grey})`
+  let color = n.toString(16);
+  color = color + color + color;
+  return `#${color}`;
 };
 
 const schema = new mongoose.Schema({

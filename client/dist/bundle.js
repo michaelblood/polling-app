@@ -29922,7 +29922,9 @@ var Modal = _react2.default.createClass({
           !!this.state.alert && _react2.default.createElement(_common.AlertPopup, { message: this.state.alert.message, onClick: this.dismissAlert, type: this.state.alert.type }),
           _react2.default.createElement(
             'form',
-            null,
+            { onSubmit: function onSubmit(e) {
+                return e.preventDefault();
+              } },
             _react2.default.createElement(
               'div',
               { className: 'input-group' },

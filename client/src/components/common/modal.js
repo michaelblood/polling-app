@@ -46,7 +46,7 @@ const Modal = React.createClass({
           </div>
           <div className="panel-body">
             {!!this.state.alert && <AlertPopup message={this.state.alert.message} onClick={this.dismissAlert} type={this.state.alert.type} />}
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="input-group">
                 <label htmlFor="modal-input">Option:</label>
                 <input
