@@ -4,7 +4,7 @@ import { getReadableColor } from '../utilities';
 const parseOptions = ({options, onClick}) => {
   let arr = options.map((option) => (
     <button
-      className="btn btn-default btn-lg poll-options-btn"
+      className="btn btn-default poll-options-btn"
       onClick={() => onClick(option._id)}
       key={option._id}
       style={{

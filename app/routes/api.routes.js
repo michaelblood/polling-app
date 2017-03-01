@@ -182,12 +182,12 @@ module.exports = (app, passport) => {
       return;
     }
     if (req.user.savedPolls.indexOf(pollId) < 0) {
-      addFavoritePoll(req.user._id, pollId, (err, poll) => {
+      addFavoritePoll(req.user._id, pollId, (err, user) => {
         if (err) {
           res.status(200).json({error: err.toString()});
           return;
         }
-        res.status(200).json(poll);
+        res.status(200).json(user);
       });
       return;
     }
@@ -199,7 +199,7 @@ module.exports = (app, passport) => {
       res.send(poll._id);
     });
   });
-  
+
   app.post('/api/poll/:pollId/:optionId', (req, res) => {
     let pollId = req.params.pollId;
     let optionId = req.params.optionId;

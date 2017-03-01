@@ -17,15 +17,11 @@ const PollInfo = React.createClass({
       alert: null,
       modal: null,
       posting: false,
-      user: null,
       favoriting: false,
     };
   },
 
   componentDidMount() {
-    this.setState({
-      user: this.props.user
-    });
     const self = this;
     if (this.props.params.id) {
       self.setState({ fetching: true });
@@ -133,7 +129,7 @@ const PollInfo = React.createClass({
     if (this.state.favoriting) return;
     this.setState({ favoriting: true });
     const self = this;
-    fetch(`/api/poll/${this.state.poll._id}/toggleFavorite`, {
+    fetch(`/api/poll/${this.props.poll._id}/toggleFavorite`, {
       method: 'POST',
       credentials: 'same-origin'
     }).then(response => response.json())
@@ -148,11 +144,16 @@ const PollInfo = React.createClass({
           });
           return;
         }
+        self.props.updateUser(json);
         self.setState({
-          user: json,
           favoriting: false,
         });
       }).catch(err => console.log(err));
+  },
+
+  isSaved() {
+    if (!this.props.user) return false;
+    return this.props.user.savedPolls.indexOf(this.state.poll._id) >= 0;
   },
 
   addNewOption(text) {
@@ -178,11 +179,6 @@ const PollInfo = React.createClass({
           modal: false
         });
       }).catch(err => console.log(err));
-  },
-
-  isSaved() {
-    if (!this.state.user) return false;
-    return this.state.user.savedPolls.indexOf(this.state.poll._id) >= 0;
   },
 
   dismissAlert() {
@@ -220,7 +216,7 @@ const PollInfo = React.createClass({
               <Link role="button" className="btn btn-default btn-block" style={{whiteSpace: 'normal'}} to="/polls/all">
                 Back to polls
               </Link>
-              { !!this.state.user && (this.isSaved()
+              { !!this.props.user && (this.isSaved()
                 ? 
                 <button className="btn btn-danger btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleSaved}>
                   {this.state.favoriting ? 'Loading...' : <span><span className="glyphicon glyphicon-remove"></span> Unsave poll</span> }

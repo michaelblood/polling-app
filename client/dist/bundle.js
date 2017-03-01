@@ -29566,6 +29566,15 @@ var App = _react2.default.createClass({
       return console.log(err);
     });
   },
+  updateUser: function updateUser(user) {
+    if (!user._id) {
+      console.log('not sure how this happened, but invalid user');
+      return;
+    }
+    this.setState({
+      user: user
+    });
+  },
   render: function render() {
     if (this.state.fetching) {
       return _react2.default.createElement(
@@ -29671,7 +29680,8 @@ var App = _react2.default.createClass({
         )
       ),
       this.props.children && _react2.default.cloneElement(this.props.children, {
-        user: this.state.user
+        user: this.state.user,
+        updateUser: this.updateUser
       })
     );
   }
@@ -30669,14 +30679,10 @@ var PollInfo = _react2.default.createClass({
       alert: null,
       modal: null,
       posting: false,
-      user: null,
       favoriting: false
     };
   },
   componentDidMount: function componentDidMount() {
-    this.setState({
-      user: this.props.user
-    });
     var self = this;
     if (this.props.params.id) {
       self.setState({ fetching: true });
@@ -30784,7 +30790,7 @@ var PollInfo = _react2.default.createClass({
     if (this.state.favoriting) return;
     this.setState({ favoriting: true });
     var self = this;
-    fetch('/api/poll/' + this.state.poll._id + '/toggleFavorite', {
+    fetch('/api/poll/' + this.props.poll._id + '/toggleFavorite', {
       method: 'POST',
       credentials: 'same-origin'
     }).then(function (response) {
@@ -30800,13 +30806,17 @@ var PollInfo = _react2.default.createClass({
         });
         return;
       }
+      self.props.updateUser(json);
       self.setState({
-        user: json,
         favoriting: false
       });
     }).catch(function (err) {
       return console.log(err);
     });
+  },
+  isSaved: function isSaved() {
+    if (!this.props.user) return false;
+    return this.props.user.savedPolls.indexOf(this.state.poll._id) >= 0;
   },
   addNewOption: function addNewOption(text) {
     var self = this;
@@ -30834,10 +30844,6 @@ var PollInfo = _react2.default.createClass({
     }).catch(function (err) {
       return console.log(err);
     });
-  },
-  isSaved: function isSaved() {
-    if (!this.state.user) return false;
-    return this.state.user.savedPolls.indexOf(this.state.poll._id) >= 0;
   },
   dismissAlert: function dismissAlert() {
     this.setState({ alert: null });
@@ -30897,7 +30903,7 @@ var PollInfo = _react2.default.createClass({
               { role: 'button', className: 'btn btn-default btn-block', style: { whiteSpace: 'normal' }, to: '/polls/all' },
               'Back to polls'
             ),
-            !!this.state.user && (this.isSaved() ? _react2.default.createElement(
+            !!this.props.user && (this.isSaved() ? _react2.default.createElement(
               'button',
               { className: 'btn btn-danger btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleSaved },
               this.state.favoriting ? 'Loading...' : _react2.default.createElement(
@@ -30963,7 +30969,7 @@ var parseOptions = function parseOptions(_ref) {
     return _react2.default.createElement(
       'button',
       {
-        className: 'btn btn-default btn-lg poll-options-btn',
+        className: 'btn btn-default poll-options-btn',
         onClick: function onClick() {
           return _onClick(option._id);
         },

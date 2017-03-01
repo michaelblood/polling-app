@@ -62,6 +62,16 @@ const App = React.createClass({
       })
       .catch(err => console.log(err));
   },
+
+  updateUser(user) {
+    if (!user._id) {
+      console.log('not sure how this happened, but invalid user');
+      return;
+    }
+    this.setState({
+      user: user
+    });
+  },
   
   render() {
     if (this.state.fetching) {
@@ -114,7 +124,8 @@ const App = React.createClass({
           </Navbar.Collapse>
         </Navbar>
         {this.props.children && React.cloneElement(this.props.children, {
-          user: this.state.user
+          user: this.state.user,
+          updateUser: this.updateUser
         })}
       </div>
     );
