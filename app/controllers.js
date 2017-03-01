@@ -221,12 +221,12 @@ const addFavoritePoll = (userId, pollId, cb) => {
       return;
     }
     doc.savedPolls.push(pollId);
-    doc.save((err, doc) => {
+    doc.save((err, user) => {
       if (err) {
         cb(err);
         return;
       }
-      cb(null, doc);
+      cb(null, user);
     });
   });
 };
@@ -247,12 +247,12 @@ const removeFavoritePoll = (userId, pollId, cb) => {
     }
     let polls = user.savedPolls.filter(el => (el !== pollId));
     user.savedPolls = polls;
-    user.save((err, doc) => {
+    user.save((err, user) => {
       if (err) {
         cb(err);
         return;
       }
-      cb(null, doc);
+      cb(null, user);
     })
   });
 };

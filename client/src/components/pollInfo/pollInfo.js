@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import PollOptions from './pollOptions';
@@ -6,7 +6,10 @@ import PollChart from './pollChart';
 import { Modal, AlertPopup } from '../common'
 
 const PollInfo = React.createClass({
-  
+  contextTypes: {
+    router: PropTypes.object
+  },
+
   getInitialState() {
     return {
       poll: null,
@@ -41,8 +44,42 @@ const PollInfo = React.createClass({
         }).catch(err => console.log(err));
       return;
     }
-    // fetch random
-    // setState(poll: poll)
+    this.fetchRandom();
+  },
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname === '/poll/random' && prevProps.location.pathname !== '/poll/random') {
+      this.fetchRandom();
+    }
+  },
+
+  fetchRandom() {
+    const self = this;
+    if (this.state.fetching) {
+      return;
+    }
+    self.setState({ fetching: true });
+    fetch('/api/polls/random')
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
+        if (json.error) {
+          self.setState({
+            alert: {
+              type: 'danger',
+              message: 'Something went wrong. Try again later.'
+            },
+            fetching: false
+          });
+          return;
+        }
+        self.setState({
+          poll: json,
+          fetching: false
+        });
+        self.context.router.push(`/poll/${json._id}`);
+        return;
+      }).catch(err => console.log(err));
   },
 
   handleOptionClick(id) {
@@ -88,6 +125,26 @@ const PollInfo = React.createClass({
     });
   },
 
+  toggleSaved() {
+    const self = this;
+    fetch(`/api/poll/${this.state.poll._id}/toggleFavorite`, {
+      method: 'POST',
+      credentials: 'same-origin'
+    }).then(response => response.json())
+      .then(json => {
+        if (json.error) {
+          self.setState({
+            alert: {
+              message: 'Something went wrong. Try again later.',
+              type: 'danger'
+            }
+          });
+          return;
+        }
+        self.setState({ user: json });
+      }).catch(err => console.log(err));
+  },
+
   addNewOption(text) {
     const self = this;
     fetch(`/api/poll/${self.state.poll._id}/new`, {
@@ -113,6 +170,11 @@ const PollInfo = React.createClass({
       }).catch(err => console.log(err));
   },
 
+  isSaved() {
+    if (!this.state.user) return false;
+    return this.state.user.savedPolls.indexOf(this.state.poll._id) >= 0;
+  },
+
   dismissAlert() {
     this.setState({alert: null});
   },
@@ -126,7 +188,11 @@ const PollInfo = React.createClass({
       );
     }
     let poll = this.state.poll;
-    if (!poll) return (<h1>error</h1>);
+    if (!poll) return (
+      <div className="jumbotron text-center">
+        <h1>You broke something.<small>Congratulations.</small></h1>
+      </div>
+    );
     return (
       <div>
         {this.state.modal && <Modal onClick={this.addNewOption} destroy={this.destroyModal} />}
@@ -140,12 +206,21 @@ const PollInfo = React.createClass({
         <div className="container">
           {!!this.state.alert && <AlertPopup message={this.state.alert.message} type={this.state.alert.type} onClick={this.dismissAlert} />}
           <div className="row">
-            <div className="col-md-2 hidden-xs hidden-sm">
-              <Link role="button" className="btn btn-default btn-lg" to="/polls/all">
+            <div className="col-md-2 col-xs-4">
+              <Link role="button" className="btn btn-default btn-block" style={{whiteSpace: 'normal'}} to="/polls/all">
                 Back to polls
               </Link>
+              { !!this.state.user && (this.isSaved()
+                ? 
+                <button className="btn btn-danger btn-block" style={{whiteSpace: 'normal'}} onClick={this.toggleFavorite}>
+                  <span className="glyphicon glyphicon-remove"></span> Unsave poll
+                </button>
+                :
+                <button className="btn btn-success btn-block" style={{whiteSpace: 'normal'}}>
+                  <span className="glyphicon glyphicon-ok"></span> Save poll
+                </button>)}
             </div>
-            {this.state.posting
+            { this.state.posting
               ? 
               <div className="col-md-4 col-xs-8">
                 <div className="loading-spinner"></div>

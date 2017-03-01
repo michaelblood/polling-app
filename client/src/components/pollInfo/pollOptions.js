@@ -24,7 +24,7 @@ const parseOptions = ({options, onClick}) => {
 const PollOptions = ({ options, onClick, canAddNewOptions, addNew }) => {
   let list = parseOptions({options, onClick});
   return (
-    <div className="col-xs-12 col-md-4">
+    <div className="col-xs-8 col-md-4">
       <h1 style={{color: "#31708f"}}>What do you think?</h1>
       <hr />
       <div className="row">
@@ -36,6 +36,7 @@ const PollOptions = ({ options, onClick, canAddNewOptions, addNew }) => {
             <button
               className="btn btn-success btn-block"
               onClick={addNew}
+              style={{ whiteSpace: 'normal' }}
             >
               Don't see a good option? Write your own!
             </button>
@@ -43,7 +44,7 @@ const PollOptions = ({ options, onClick, canAddNewOptions, addNew }) => {
           :
           <div>
             <hr/>
-            <button className="btn disabled btn-default">
+            <button className="btn disabled btn-default" style={{whiteSpace: 'normal'}}>
               The poll creator said you can't add your own option.
             </button>
           </div>}

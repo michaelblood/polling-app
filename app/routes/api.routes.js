@@ -69,7 +69,7 @@ module.exports = (app, passport) => {
         res.status(200).json({error: 'no polls found'});
         return;
       }
-      res.status(200).json(poll._id);
+      res.status(200).json(poll);
     });
   });
 
@@ -175,6 +175,31 @@ module.exports = (app, passport) => {
     });
   });
 
+  app.post('/api/poll/:pollId/toggleFavorite', apiIsLoggedIn, (req, res) => {
+    let pollId = req.params.pollId;
+    if (!req.user) {
+      res.status(200).json({error: 'something went wrong'});
+      return;
+    }
+    if (req.user.savedPolls.indexOf(pollId) < 0) {
+      addFavoritePoll(req.user._id, pollId, (err, poll) => {
+        if (err) {
+          res.status(200).json({error: err.toString()});
+          return;
+        }
+        res.status(200).json(poll);
+      });
+      return;
+    }
+    removeFavoritePoll(req.user._id, pollId, (err, poll) => {
+      if (err) {
+        res.status(200).json({error: err.toString()});
+        return;
+      }
+      res.send(poll._id);
+    });
+  });
+  
   app.post('/api/poll/:pollId/:optionId', (req, res) => {
     let pollId = req.params.pollId;
     let optionId = req.params.optionId;
@@ -202,28 +227,4 @@ module.exports = (app, passport) => {
   });
   
 
-  app.post('/api/poll/:pollId/toggleFavorite', apiIsLoggedIn, (req, res) => {
-    let pollId = req.params.pollId;
-    if (!req.user) {
-      res.status(200).json({error: 'something went wrong'});
-      return;
-    }
-    if (req.user.savedPolls.indexOf(pollId) < 0) {
-      addFavoritePoll(req.user._id, pollId, (err, poll) => {
-        if (err) {
-          res.status(200).json({error: err.toString()});
-          return;
-        }
-        res.status(200).json(poll);
-      });
-      return;
-    }
-    removeFavoritePoll(req.user._id, pollId, (err, poll) => {
-      if (err) {
-        res.status(200).json({error: err.toString()});
-        return;
-      }
-      res.send(poll._id);
-    });
-  });
 };

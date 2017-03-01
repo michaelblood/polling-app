@@ -30657,6 +30657,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var PollInfo = _react2.default.createClass({
   displayName: 'PollInfo',
+
+  contextTypes: {
+    router: _react.PropTypes.object
+  },
+
   getInitialState: function getInitialState() {
     return {
       poll: null,
@@ -30692,8 +30697,42 @@ var PollInfo = _react2.default.createClass({
       });
       return;
     }
-    // fetch random
-    // setState(poll: poll)
+    this.fetchRandom();
+  },
+  componentDidUpdate: function componentDidUpdate(prevProps) {
+    if (this.props.location.pathname === '/poll/random' && prevProps.location.pathname !== '/poll/random') {
+      this.fetchRandom();
+    }
+  },
+  fetchRandom: function fetchRandom() {
+    var self = this;
+    if (this.state.fetching) {
+      return;
+    }
+    self.setState({ fetching: true });
+    fetch('/api/polls/random').then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      console.log(json);
+      if (json.error) {
+        self.setState({
+          alert: {
+            type: 'danger',
+            message: 'Something went wrong. Try again later.'
+          },
+          fetching: false
+        });
+        return;
+      }
+      self.setState({
+        poll: json,
+        fetching: false
+      });
+      self.context.router.push('/poll/' + json._id);
+      return;
+    }).catch(function (err) {
+      return console.log(err);
+    });
   },
   handleOptionClick: function handleOptionClick(id) {
     this.setState({ posting: true });
@@ -30737,6 +30776,28 @@ var PollInfo = _react2.default.createClass({
       alert: false
     });
   },
+  toggleSaved: function toggleSaved() {
+    var self = this;
+    fetch('/api/poll/' + this.state.poll._id + '/toggleFavorite', {
+      method: 'POST',
+      credentials: 'same-origin'
+    }).then(function (response) {
+      return response.json();
+    }).then(function (json) {
+      if (json.error) {
+        self.setState({
+          alert: {
+            message: 'Something went wrong. Try again later.',
+            type: 'danger'
+          }
+        });
+        return;
+      }
+      self.setState({ user: json });
+    }).catch(function (err) {
+      return console.log(err);
+    });
+  },
   addNewOption: function addNewOption(text) {
     var self = this;
     fetch('/api/poll/' + self.state.poll._id + '/new', {
@@ -30764,6 +30825,10 @@ var PollInfo = _react2.default.createClass({
       return console.log(err);
     });
   },
+  isSaved: function isSaved() {
+    if (!this.state.user) return false;
+    return this.state.user.savedPolls.indexOf(this.state.poll._id) >= 0;
+  },
   dismissAlert: function dismissAlert() {
     this.setState({ alert: null });
   },
@@ -30777,9 +30842,18 @@ var PollInfo = _react2.default.createClass({
     }
     var poll = this.state.poll;
     if (!poll) return _react2.default.createElement(
-      'h1',
-      null,
-      'error'
+      'div',
+      { className: 'jumbotron text-center' },
+      _react2.default.createElement(
+        'h1',
+        null,
+        'You broke something.',
+        _react2.default.createElement(
+          'small',
+          null,
+          'Congratulations.'
+        )
+      )
     );
     return _react2.default.createElement(
       'div',
@@ -30807,12 +30881,23 @@ var PollInfo = _react2.default.createClass({
           { className: 'row' },
           _react2.default.createElement(
             'div',
-            { className: 'col-md-2 hidden-xs hidden-sm' },
+            { className: 'col-md-2 col-xs-4' },
             _react2.default.createElement(
               _reactRouter.Link,
-              { role: 'button', className: 'btn btn-default btn-lg', to: '/polls/all' },
+              { role: 'button', className: 'btn btn-default btn-block', style: { whiteSpace: 'normal' }, to: '/polls/all' },
               'Back to polls'
-            )
+            ),
+            !!this.state.user && (this.isSaved() ? _react2.default.createElement(
+              'button',
+              { className: 'btn btn-danger btn-block', style: { whiteSpace: 'normal' }, onClick: this.toggleFavorite },
+              _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove' }),
+              ' Unsave poll'
+            ) : _react2.default.createElement(
+              'button',
+              { className: 'btn btn-success btn-block', style: { whiteSpace: 'normal' } },
+              _react2.default.createElement('span', { className: 'glyphicon glyphicon-ok' }),
+              ' Save poll'
+            ))
           ),
           this.state.posting ? _react2.default.createElement(
             'div',
@@ -30887,7 +30972,7 @@ var PollOptions = function PollOptions(_ref2) {
   var list = parseOptions({ options: options, onClick: onClick });
   return _react2.default.createElement(
     'div',
-    { className: 'col-xs-12 col-md-4' },
+    { className: 'col-xs-8 col-md-4' },
     _react2.default.createElement(
       'h1',
       { style: { color: "#31708f" } },
@@ -30909,7 +30994,8 @@ var PollOptions = function PollOptions(_ref2) {
             'button',
             {
               className: 'btn btn-success btn-block',
-              onClick: addNew
+              onClick: addNew,
+              style: { whiteSpace: 'normal' }
             },
             'Don\'t see a good option? Write your own!'
           )
@@ -30919,7 +31005,7 @@ var PollOptions = function PollOptions(_ref2) {
           _react2.default.createElement('hr', null),
           _react2.default.createElement(
             'button',
-            { className: 'btn disabled btn-default' },
+            { className: 'btn disabled btn-default', style: { whiteSpace: 'normal' } },
             'The poll creator said you can\'t add your own option.'
           )
         )
