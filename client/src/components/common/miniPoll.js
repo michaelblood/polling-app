@@ -32,7 +32,7 @@ const MiniPoll = ({ poll, onClick, destroy }) => {
         </div>
         <div className="panel-body">
           {!!destroy &&
-            <button style={{marginTop: '0px'}} onClick={destroy} className="btn btn-danger pull-left">
+            <button style={{padding: '3px 12px'}} onClick={destroy} className="btn btn-danger pull-left">
               Delete
             </button>}
           <p className="pull-right">

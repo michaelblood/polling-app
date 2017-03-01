@@ -74,7 +74,7 @@ const PollsContainer = React.createClass({
         favorites: 0,
         created: 0
       }
-    }, () => fetch());
+    }, () => this.fetch());
   },
 
   fetch() {

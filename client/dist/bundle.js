@@ -29817,7 +29817,7 @@ var MiniPoll = function MiniPoll(_ref) {
         { className: 'panel-body' },
         !!destroy && _react2.default.createElement(
           'button',
-          { style: { marginTop: '0px' }, onClick: destroy, className: 'btn btn-danger pull-left' },
+          { style: { padding: '3px 12px' }, onClick: destroy, className: 'btn btn-danger pull-left' },
           'Delete'
         ),
         _react2.default.createElement(
@@ -31251,6 +31251,8 @@ var PollsContainer = _react2.default.createClass({
     });
   },
   resetThenFetch: function resetThenFetch() {
+    var _this = this;
+
     this.setState({
       polls: {
         all: [],
@@ -31263,7 +31265,7 @@ var PollsContainer = _react2.default.createClass({
         created: 0
       }
     }, function () {
-      return fetch();
+      return _this.fetch();
     });
   },
   fetch: function (_fetch) {
@@ -31339,7 +31341,7 @@ var PollsContainer = _react2.default.createClass({
     this.context.router.push('/poll/' + id);
   },
   renderPolls: function renderPolls() {
-    var _this = this;
+    var _this2 = this;
 
     var polls = this.state.polls[this.props.params.filter];
     if (polls.length < 1) return null;
@@ -31349,12 +31351,12 @@ var PollsContainer = _react2.default.createClass({
       var poll = polls[i];
       if (poll) {
         var destroy = false;
-        if (_this.props.user && poll.authorId === _this.props.user._id) {
+        if (_this2.props.user && poll.authorId === _this2.props.user._id) {
           destroy = function destroy(e) {
-            return _this.deletePoll(e, poll._id);
+            return _this2.deletePoll(e, poll._id);
           };
         }
-        renderedPolls.push(_react2.default.createElement(_common.MiniPoll, { key: poll._id, destroy: destroy, poll: poll, onClick: _this.handlePollClick }));
+        renderedPolls.push(_react2.default.createElement(_common.MiniPoll, { key: poll._id, destroy: destroy, poll: poll, onClick: _this2.handlePollClick }));
       }
     };
 
